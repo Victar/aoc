@@ -1,0 +1,4 @@
+a b c d (contains dairy, fish)
+e f j a (contains dairy)
+c f (contains soy)
+c a j (contains fish)
