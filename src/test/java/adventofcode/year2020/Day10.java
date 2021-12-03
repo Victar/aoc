@@ -1,7 +1,6 @@
 package adventofcode.year2020;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -17,7 +16,7 @@ public class Day10 extends BaseTest {
 	@Test public void runSilver() throws Exception {
 		final ArrayList<Integer> data = readIntFromFile("year2020/day10/input.txt");
 		int countX1 = 1;
-		int countX2 = 0;
+		final int countX2 = 0;
 		int countX3 = 0;
 		Collections.sort(data);
 		System.out.println(data);
@@ -26,7 +25,7 @@ public class Day10 extends BaseTest {
 			if (i == data.size() - 1) {
 				countX3 = countX3 + 1;
 			} else {
-				int diff = data.get(i + 1) - data.get(i);
+				final int diff = data.get(i + 1) - data.get(i);
 				if (diff == 1) {
 					countX1 = countX1 + 1;
 
@@ -50,7 +49,7 @@ public class Day10 extends BaseTest {
 		Collections.sort(data);
 		data.add(data.get(data.size() - 1) + 3);
 		System.out.println(data);
-		ArrayList<Long> pathList = new ArrayList<>();
+		final ArrayList<Long> pathList = new ArrayList<>();
 		for (int i = 0; i < data.size(); i++) {
 			pathList.add((long) -1);
 		}
@@ -58,19 +57,18 @@ public class Day10 extends BaseTest {
 		System.out.println(countPaths(data, pathList, 0));
 		System.out.println(pathList);
 
-
 	}
 
-	public long countPaths(ArrayList<Integer> data, ArrayList<Long> pathList, int i) {
-		if (i == data.size()-1) {
+	public long countPaths(final ArrayList<Integer> data, final ArrayList<Long> pathList, final int i) {
+		if (i == data.size() - 1) {
 			return 1;
 		} else if (pathList.get(i) > -1) {
 			return pathList.get(i);
 		}
 		long pathesForI = 0;
-		for (int j = i+1; j < Math.min(data.size(), j + 3); j++) {
+		for (int j = i + 1; j < Math.min(data.size(), j + 3); j++) {
 			if (data.get(j) - data.get(i) <= 3) {
-//				System.out.println(i + " - " + j + "  " + data.get(i) + " " + data.get(j));
+				//				System.out.println(i + " - " + j + "  " + data.get(i) + " " + data.get(j));
 				pathesForI += countPaths(data, pathList, j);
 			}
 		}

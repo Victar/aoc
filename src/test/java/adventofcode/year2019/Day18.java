@@ -15,7 +15,7 @@ public class Day18 extends BaseTest {
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2019/day18/input_sample.txt");
 		int count = 0;
-		for (String input : data) {
+		for (final String input : data) {
 			count = input.length();
 			System.out.println(input);
 		}

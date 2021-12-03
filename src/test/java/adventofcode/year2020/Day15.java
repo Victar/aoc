@@ -11,7 +11,7 @@ import adventofcode.BaseTest;
 
 public class Day15 extends BaseTest {
 
-	public static final int[] data = new int[] { 18, 8, 0, 5, 4, 1, 20 };
+	public static final int[] data = { 18, 8, 0, 5, 4, 1, 20 };
 
 	public static final int SIZE_SILVER = 2020;
 	public static final int SIZE_GOLD = 30000000;
@@ -21,18 +21,18 @@ public class Day15 extends BaseTest {
 	}
 
 	@Test public void runSilver() throws Exception {
-		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
+		final Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
 		for (int i = 0; i < data.length; i++) {
 			map.put(i, data[i]);
 		}
 		System.out.println(map);
 		for (int i = data.length; i < SIZE_SILVER; i++) {
-			int number = map.get(i - 1);
+			final int number = map.get(i - 1);
 			if (isFirstTimeSpoken(i - 1, number, map)) {
 				map.put(i, 0);
 			} else {
-				int turnLast = getNumberTurn(i - 1, number, map);
-				int turnBefore = getNumberTurn(i - 2, number, map);
+				final int turnLast = getNumberTurn(i - 1, number, map);
+				final int turnBefore = getNumberTurn(i - 2, number, map);
 
 				map.put(i, turnLast - turnBefore);
 			}
@@ -45,7 +45,7 @@ public class Day15 extends BaseTest {
 	}
 
 	@Test public void runGold() throws Exception {
-		Map<Integer, List<Integer>> map = new LinkedHashMap<>();
+		final Map<Integer, List<Integer>> map = new LinkedHashMap<>();
 		int currentNumber = 0;
 		for (int i = 0; i < data.length; i++) {
 			currentNumber = data[i];
@@ -56,7 +56,7 @@ public class Day15 extends BaseTest {
 			if (map.get(currentNumber).size() == 1) {
 				currentNumber = 0;
 			} else {
-				List<Integer> l = map.get(currentNumber);
+				final List<Integer> l = map.get(currentNumber);
 				currentNumber = l.get(l.size() - 1) - l.get(l.size() - 2);
 			}
 			map.putIfAbsent(currentNumber, new ArrayList<>());
@@ -68,7 +68,7 @@ public class Day15 extends BaseTest {
 		System.out.println(currentNumber);
 	}
 
-	public int getNumberTurn(int index, int number, Map<Integer, Integer> map) {
+	public int getNumberTurn(final int index, final int number, final Map<Integer, Integer> map) {
 		for (int i = index; i >= 0; i--) {
 			if (number == map.get(i)) {
 				return i;
@@ -78,7 +78,7 @@ public class Day15 extends BaseTest {
 		return -1;
 	}
 
-	public boolean isFirstTimeSpoken(int index, int number, Map<Integer, Integer> map) {
+	public boolean isFirstTimeSpoken(final int index, final int number, final Map<Integer, Integer> map) {
 		for (int i = 0; i < index; i++) {
 			if (number == map.get(i)) {
 				return false;

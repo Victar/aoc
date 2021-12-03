@@ -8,8 +8,7 @@ import adventofcode.BaseTest;
 
 public class Day12 extends BaseTest {
 
-	@Test
-	public void singleCheck() {
+	@Test public void singleCheck() {
 
 	}
 
@@ -23,16 +22,16 @@ public class Day12 extends BaseTest {
 		System.out.println(solveGold(data));
 	}
 
-	public int solveGold(ArrayList<String> data) {
+	public int solveGold(final ArrayList<String> data) {
 		int x = 0;
 		int y = 0;
 		int waypointX = 10;
 		int waypointY = 1;
 
 		for (int i = 0; i < data.size(); i++) {
-			String instruction = data.get(i);
-			String command = instruction.substring(0, 1);
-			int value = Integer.parseInt(instruction.substring(1));
+			final String instruction = data.get(i);
+			final String command = instruction.substring(0, 1);
+			final int value = Integer.parseInt(instruction.substring(1));
 			if ("N".equals(command)) {
 				waypointY = waypointY + value;
 			}
@@ -47,14 +46,14 @@ public class Day12 extends BaseTest {
 			}
 			if ("L".equals(command) || "R".equals(command)) {
 				int direction = 0; //0-E, 1-S, 2-W, 3-N
-				int valuePour = (value % 360) / 90;
+				final int valuePour = (value % 360) / 90;
 				if ("L".equals(command)) {
 					direction = (direction - valuePour + 4) % 4;
 				} else { //R case
 					direction = (direction + valuePour + 4) % 4;
 				}
-				int waypointXTemp = waypointX;
-				int waypointYTemp = waypointY;
+				final int waypointXTemp = waypointX;
+				final int waypointYTemp = waypointY;
 
 				if (direction == 1) {
 					waypointX = waypointYTemp;
@@ -77,14 +76,14 @@ public class Day12 extends BaseTest {
 		return Math.abs(x) + Math.abs(y);
 	}
 
-	public int solveSilver(ArrayList<String> data) {
+	public int solveSilver(final ArrayList<String> data) {
 		int x = 0;
 		int y = 0;
 		int direction = 0; //0-E, 1-S, 2-W, 3-N
 		for (int i = 0; i < data.size(); i++) {
-			String instruction = data.get(i);
-			String command = instruction.substring(0, 1);
-			int value = Integer.parseInt(instruction.substring(1));
+			final String instruction = data.get(i);
+			final String command = instruction.substring(0, 1);
+			final int value = Integer.parseInt(instruction.substring(1));
 			//			System.out.println(command + "-" + value);
 			if ("N".equals(command)) {
 				y = y + value;
@@ -100,12 +99,12 @@ public class Day12 extends BaseTest {
 			}
 			if ("L".equals(command)) {
 				System.out.println("L: " + value + "direction: " + direction);
-				int valuePour = (value % 360) / 90;
+				final int valuePour = (value % 360) / 90;
 				direction = (direction - valuePour + 4) % 4;
 			}
 			if ("R".equals(command)) {
 				System.out.println("R: " + value + "direction: " + direction);
-				int valuePour = (value % 360) / 90;
+				final int valuePour = (value % 360) / 90;
 				direction = (direction + valuePour) % 4;
 			}
 			if ("F".equals(command)) {

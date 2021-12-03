@@ -14,7 +14,7 @@ public class Day18 extends BaseTest {
 	private static final Map<String, Integer> priorityGold;
 
 	static {
-		Map<String, Integer> temp = new HashMap<>();
+		final Map<String, Integer> temp = new HashMap<>();
 		temp.put("*", 1);
 		temp.put("+", 1);
 		temp.put("(", 0);
@@ -22,7 +22,7 @@ public class Day18 extends BaseTest {
 	}
 
 	static {
-		Map<String, Integer> temp = new HashMap<>();
+		final Map<String, Integer> temp = new HashMap<>();
 		temp.put("*", 1);
 		temp.put("+", 2);
 		temp.put("(", 0);
@@ -30,7 +30,7 @@ public class Day18 extends BaseTest {
 	}
 
 	@Test @Ignore public void singleCheck() {
-//		System.out.println(calcString("1 + 2 + 3", prioritySilver));
+		//		System.out.println(calcString("1 + 2 + 3", prioritySilver));
 
 		System.out.println(calcString("1 + (2 * 3) + (4 * (5 + 6))", prioritySilver));
 		//System.out.println(calcString("5 + (8 + 3 * 9 + 3 * 4 * 3)", prioritySilver));
@@ -39,7 +39,7 @@ public class Day18 extends BaseTest {
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day18/input.txt");
 		long count = 0;
-		for (String input : data) {
+		for (final String input : data) {
 			count += calcString(input, prioritySilver);
 		}
 		System.out.println(count);
@@ -48,38 +48,38 @@ public class Day18 extends BaseTest {
 	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day18/input.txt");
 		long count = 0;
-		for (String input : data) {
+		for (final String input : data) {
 			count += calcString(input, priorityGold);
 		}
 		System.out.println(count);
 	}
 
-	public long calcString(String input, Map<String, Integer> priorityMap) {
+	public long calcString(String input, final Map<String, Integer> priorityMap) {
 		input = input.replaceAll("\\(", "\\( ").replaceAll("\\)", " \\)");
-//		System.out.println("Infix: " + input);
-		String[] notation = StringUtils.split(input, " ");
-//		System.out.println("Infix array: " + Arrays.toString(notation));
-		Queue<String> queue = convertInfixToRPN(notation, priorityMap);
-//		System.out.println("RPN array: " + queue);
+		//		System.out.println("Infix: " + input);
+		final String[] notation = StringUtils.split(input, " ");
+		//		System.out.println("Infix array: " + Arrays.toString(notation));
+		final Queue<String> queue = convertInfixToRPN(notation, priorityMap);
+		//		System.out.println("RPN array: " + queue);
 		return evalRPN(queue.toArray(new String[] {}));
 
 	}
 
-	boolean isNumber(String str) {
+	boolean isNumber(final String str) {
 		try {
 			Long.valueOf(str);
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return false;
 		}
 	}
 
-	public Queue<String> convertInfixToRPN(String[] infixNotation, Map<String, Integer> priority) {
-		Queue<String> queue = new LinkedList<>();
-		Stack<String> stack = new Stack<>();
+	public Queue<String> convertInfixToRPN(final String[] infixNotation, final Map<String, Integer> priority) {
+		final Queue<String> queue = new LinkedList<>();
+		final Stack<String> stack = new Stack<>();
 		for (String token : infixNotation) {
 			token = token.trim();
-//			System.out.println("token:" + token +  " stack:" + stack + " queue:" +queue);
+			//			System.out.println("token:" + token +  " stack:" + stack + " queue:" +queue);
 			if ("(".equals(token)) {
 				stack.push(token);
 				continue;
@@ -111,16 +111,16 @@ public class Day18 extends BaseTest {
 		return queue;
 	}
 
-	public long evalRPN(String[] tokens) {
+	public long evalRPN(final String[] tokens) {
 		long returnValue = 0;
-		String operators = "+*";
-		Stack<String> stack = new Stack<String>();
-		for (String token : tokens) {
+		final String operators = "+*";
+		final Stack<String> stack = new Stack<String>();
+		for (final String token : tokens) {
 			if (!operators.contains(token)) {
 				stack.push(token);
 			} else {
-				long a = Long.valueOf(stack.pop());
-				long b = Long.valueOf(stack.pop());
+				final long a = Long.valueOf(stack.pop());
+				final long b = Long.valueOf(stack.pop());
 				switch (token) {
 					case "+":
 						stack.push(String.valueOf(a + b));
@@ -131,7 +131,7 @@ public class Day18 extends BaseTest {
 
 				}
 			}
-//			System.out.println("RPN: "  + stack);
+			//			System.out.println("RPN: "  + stack);
 		}
 
 		returnValue = Long.valueOf(stack.pop());

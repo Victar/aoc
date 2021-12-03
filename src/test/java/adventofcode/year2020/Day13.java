@@ -2,7 +2,6 @@ package adventofcode.year2020;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,18 +20,18 @@ public class Day13 extends BaseTest {
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day13/input.txt");
 
-		for (String input : data) {
+		for (final String input : data) {
 			System.out.println(input);
 		}
-		Integer time = Integer.parseInt(data.get(0));
-		String[] arrBus = StringUtils.split(data.get(1), ",x");
+		final Integer time = Integer.parseInt(data.get(0));
+		final String[] arrBus = StringUtils.split(data.get(1), ",x");
 		final ArrayList<Integer> busNames = new ArrayList<Integer>();
-		for (String input : arrBus) {
+		for (final String input : arrBus) {
 			busNames.add(Integer.parseInt(input));
 		}
 		boolean found = true;
 		for (int i = time; found; i++) {
-			for (Integer busName : busNames) {
+			for (final Integer busName : busNames) {
 				if (i % busName == 0) {
 					System.out.println(busName);
 					System.out.println(i);
@@ -43,15 +42,13 @@ public class Day13 extends BaseTest {
 		}
 	}
 
-	@Test
-	@Ignore
-	public void runGold() throws Exception {
+	@Test @Ignore public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day13/input_sample.txt");
 
 		//		for (String input : data) {
 		//			System.out.println(input);
 		//		}
-		String[] arrBus = StringUtils.split(data.get(1), ",");
+		final String[] arrBus = StringUtils.split(data.get(1), ",");
 		Map<BigInteger, BigInteger> busPostiton = new LinkedHashMap<>();
 		int p = 0;
 		for (int i = 0; i < arrBus.length; i++) {
@@ -72,57 +69,55 @@ public class Day13 extends BaseTest {
 		///
 
 		BigInteger bigN = BigInteger.valueOf(1);
-		for (Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
+		for (final Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
 			System.out.println(entry.getKey() + " => " + entry.getValue());
 			bigN = bigN.multiply(entry.getKey());
 		}
 		System.out.println(bigN);
 
 		//Mi Map
-		Map<BigInteger, BigInteger> miMap = new LinkedHashMap<>();
-		for (Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
+		final Map<BigInteger, BigInteger> miMap = new LinkedHashMap<>();
+		for (final Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
 			miMap.put(entry.getKey(), bigN.divide(entry.getKey()));
 		}
 		System.out.println(miMap);
 
+		final Map<BigInteger, BigInteger> uiviMap = new LinkedHashMap<>();
 
-		Map<BigInteger, BigInteger> uiviMap = new LinkedHashMap<>();
-
-		BigInteger sum =  BigInteger.valueOf(0);
-		for (Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
-			BigInteger keyMi = miMap.get(entry.getKey());
+		final BigInteger sum = BigInteger.valueOf(0);
+		for (final Map.Entry<BigInteger, BigInteger> entry : busPostiton.entrySet()) {
+			final BigInteger keyMi = miMap.get(entry.getKey());
 			System.out.println(keyMi + "  " + entry.getKey());
-			System.out.println("computeInverse: ( " + entry.getKey().intValue() + ": " +keyMi.intValue() +" )" + computeInverse(entry.getKey().intValue(), keyMi.intValue()));
+			System.out.println("computeInverse: ( " + entry.getKey().intValue() + ": " + keyMi.intValue() + " )" + computeInverse(
+					entry.getKey().intValue(), keyMi.intValue()));
 		}
 		System.out.println(uiviMap);
 	}
 
-	@Test
-	public void runGold2() throws Exception {
+	@Test public void runGold2() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day13/input.txt");
 
-		String[] arrBus = StringUtils.split(data.get(1), ",");
-		long l = 600691418730595l;
+		final String[] arrBus = StringUtils.split(data.get(1), ",");
+		final long l = 600691418730595l;
 		System.out.println(l);
 		int p = 0;
-		Map<Long, Long> busPostiton = new LinkedHashMap<>();
+		final Map<Long, Long> busPostiton = new LinkedHashMap<>();
 		for (int i = 0; i < arrBus.length; i++) {
 			if (!"x".equals(arrBus[i])) {
-				Long x = Long.valueOf(arrBus[i]);
-				long rem =  x-p;
-				while(rem<0){
-					rem+=x;
+				final Long x = Long.valueOf(arrBus[i]);
+				long rem = x - p;
+				while (rem < 0) {
+					rem += x;
 				}
-				busPostiton.put(x,rem);
+				busPostiton.put(x, rem);
 			}
 			p++;
 		}
-		long[] rem = new long[busPostiton.size()];// { 1, 2, 3 };
-		long[] num = new long[busPostiton.size()];// { 3, 4, 5 };
+		final long[] rem = new long[busPostiton.size()];// { 1, 2, 3 };
+		final long[] num = new long[busPostiton.size()];// { 3, 4, 5 };
 
-
-		int i=0;
-		for (Map.Entry<Long, Long> entry : busPostiton.entrySet()) {
+		int i = 0;
+		for (final Map.Entry<Long, Long> entry : busPostiton.entrySet()) {
 			System.out.println(entry);
 			num[i] = entry.getKey();
 			rem[i] = entry.getValue();
@@ -131,14 +126,14 @@ public class Day13 extends BaseTest {
 
 	}
 
-	public long computeMinX(long[] rem, long[] num) {
+	public long computeMinX(final long[] rem, final long[] num) {
 		long product = 1;
 		for (int i = 0; i < num.length; i++) {
 			product *= num[i];
 		}
 
-		long[] partialProduct = new long[num.length];
-		long[] inverse = new long[num.length];
+		final long[] partialProduct = new long[num.length];
+		final long[] inverse = new long[num.length];
 		long sum = 0;
 
 		for (int i = 0; i < num.length; i++) {
@@ -150,7 +145,9 @@ public class Day13 extends BaseTest {
 	}
 
 	public long computeInverse(long a, long b) {
-		long m = b, t, q;
+		final long m = b;
+		long t;
+		long q;
 		long x = 0, y = 1;
 		if (b == 1) return 0;
 		// Apply extended Euclid Algorithm

@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import adventofcode.BaseTest;
 
+
 import static org.junit.Assert.assertEquals;
 
 public class Day25 extends BaseTest {
@@ -22,14 +23,14 @@ public class Day25 extends BaseTest {
 
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day25/input.txt");
-		long cardExpected = Long.parseLong(data.get(0));//8184785;
-		long doorExpected = Long.parseLong(data.get(1));//5293040;
-		long cardExpectedTimes = transformSubjectNumberFindTimes(SUBJECT_NUMBER, cardExpected);
-		long result = transformSubjectNumber(cardExpectedTimes, doorExpected);
+		final long cardExpected = Long.parseLong(data.get(0));//8184785;
+		final long doorExpected = Long.parseLong(data.get(1));//5293040;
+		final long cardExpectedTimes = transformSubjectNumberFindTimes(SUBJECT_NUMBER, cardExpected);
+		final long result = transformSubjectNumber(cardExpectedTimes, doorExpected);
 		System.out.println("result:" + result);
 	}
 
-	public long transformSubjectNumber(long times, long subjectNumber) {
+	public long transformSubjectNumber(final long times, final long subjectNumber) {
 		long value = 1;
 		for (long i = 0; i < times; i++) {
 			value = value * subjectNumber;
@@ -38,7 +39,7 @@ public class Day25 extends BaseTest {
 		return value;
 	}
 
-	public long transformSubjectNumberFindTimes(long subjectNumber, long valueSearch) {
+	public long transformSubjectNumberFindTimes(final long subjectNumber, final long valueSearch) {
 		long value = 1;
 		for (long i = 0; true; i++) {
 			value = value * subjectNumber;

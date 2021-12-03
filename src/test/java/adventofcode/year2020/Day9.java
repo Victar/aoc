@@ -15,10 +15,9 @@ public class Day9 extends BaseTest {
 
 	}
 
-
 	@Test public void runSilver() throws Exception {
 		final ArrayList<BigInteger> data = readBigIntFromFile("year2020/day9/input.txt");
-		int preamble = 25;
+		final int preamble = 25;
 		for (int input = preamble; input < data.size(); input++) {
 			if (!isValidNumberBig(data.get(input), preamble, input, data)) {
 				System.out.println(data.get(input));
@@ -29,16 +28,16 @@ public class Day9 extends BaseTest {
 	//	21806024
 	@Test public void runGold() throws Exception {
 		final ArrayList<BigInteger> data = readBigIntFromFile("year2020/day9/input.txt");
-		BigInteger invalid = new BigInteger("21806024");
+		final BigInteger invalid = new BigInteger("21806024");
 
 		for (int input = 0; input < data.size(); input++) {
 
 			BigInteger currentSet = BigInteger.valueOf(0);
 			for (int j = input; j < data.size(); j++) {
 				currentSet = currentSet.add(data.get(j));
-				if (currentSet.equals(invalid)&& input!=j) {
+				if (currentSet.equals(invalid) && input != j) {
 					System.out.println("found");
-					List<BigInteger> subArray = data.subList(input, j);
+					final List<BigInteger> subArray = data.subList(input, j);
 					System.out.println(subArray);
 					Collections.sort(subArray);
 					System.out.println(subArray);
@@ -51,17 +50,17 @@ public class Day9 extends BaseTest {
 		}
 	}
 
-	public boolean isValidNumber(int number, int preamble, int index, ArrayList<Integer> data) {
-		List<Integer> subArray = data.subList(index - preamble, index);
+	public boolean isValidNumber(final int number, final int preamble, final int index, final ArrayList<Integer> data) {
+		final List<Integer> subArray = data.subList(index - preamble, index);
 		return isAnyTwoSumm(number, subArray);
 	}
 
-	public boolean isValidNumberBig(BigInteger number, int preamble, int index, ArrayList<BigInteger> data) {
-		List<BigInteger> subArray = data.subList(index - preamble, index);
+	public boolean isValidNumberBig(final BigInteger number, final int preamble, final int index, final ArrayList<BigInteger> data) {
+		final List<BigInteger> subArray = data.subList(index - preamble, index);
 		return isAnyTwoSummBig(number, subArray);
 	}
 
-	public boolean isAnyTwoSummBig(BigInteger number, List<BigInteger> data) {
+	public boolean isAnyTwoSummBig(final BigInteger number, final List<BigInteger> data) {
 		for (int i = 0; i < data.size(); i++) {
 			for (int j = 0; j < data.size(); j++) {
 				if (i != j && data.get(i).add(data.get(j)).equals(number)) {
@@ -72,7 +71,7 @@ public class Day9 extends BaseTest {
 		return false;
 	}
 
-	public boolean isAnyTwoSumm(int number, List<Integer> data) {
+	public boolean isAnyTwoSumm(final int number, final List<Integer> data) {
 		for (int i = 0; i < data.size(); i++) {
 			for (int j = 0; j < data.size(); j++) {
 				if (i != j && data.get(i) + data.get(j) == number) {

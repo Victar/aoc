@@ -9,47 +9,46 @@ import org.junit.Test;
 
 import adventofcode.BaseTest;
 
+
 import static org.junit.Assert.assertEquals;
 
 public class Day4 extends BaseTest {
-	@Test
-	public void singleCheck(){
-		System.out.println( isValidPasswordGold("pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f"));
+
+	@Test public void singleCheck() {
+		System.out.println(isValidPasswordGold("pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f"));
 	}
 
-	@Test
-	public void runSilver() throws Exception {
+	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day4/input.txt");
 		assertEquals(984, data.size());
-		ArrayList<String> passwords = parsePassport(data);
+		final ArrayList<String> passwords = parsePassport(data);
 		assertEquals(260, passwords.size());
 		int count = 0;
-		 for (String password: passwords){
-		    if (isValidPasswordSilver(password)) {
-		        count++;
-		    }
-		 }
-		 assertEquals(222, count);
+		for (final String password : passwords) {
+			if (isValidPasswordSilver(password)) {
+				count++;
+			}
+		}
+		assertEquals(222, count);
 	}
 
-	@Test
-	public void runGold() throws Exception {
+	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day4/input.txt");
 		assertEquals(984, data.size());
-		ArrayList<String> passwords = parsePassport(data);
+		final ArrayList<String> passwords = parsePassport(data);
 		assertEquals(260, passwords.size());
 		int count = 0;
-		 for (String password: passwords){
-		    if (isValidPasswordGold(password)) {
-		        count++;
-		    }
-		 }
-		 assertEquals(140, count);
+		for (final String password : passwords) {
+			if (isValidPasswordGold(password)) {
+				count++;
+			}
+		}
+		assertEquals(140, count);
 	}
 
-	protected boolean isValidPasswordSilver(String password) {
-		String[] arrayToCheck ={ "byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:" };
-		for (String toCheck : arrayToCheck) {
+	protected boolean isValidPasswordSilver(final String password) {
+		final String[] arrayToCheck = { "byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:" };
+		for (final String toCheck : arrayToCheck) {
 			if (!StringUtils.contains(password, toCheck)) {
 				return false;
 			}
@@ -68,7 +67,7 @@ public class Day4 extends BaseTest {
 					passport = "";
 				}
 			} else {
-				passport += (data.get(i) + " ");
+				passport += data.get(i) + " ";
 			}
 		}
 		if (StringUtils.isNotEmpty(passport)) {
@@ -77,54 +76,53 @@ public class Day4 extends BaseTest {
 		return parsedData;
 	}
 
-	protected boolean isValidPasswordGold(String password) {
+	protected boolean isValidPasswordGold(final String password) {
 		if (!isValidPasswordSilver(password)) {
 			return false;
 		}
 		//gold validation
-		List<String> myStringList = Arrays.asList(StringUtils.split(password, " :"));
-		String value = getValue(myStringList, "byr");
-		boolean checkIntRange = checkIntRange(value, 1920, 2002);
+		final List<String> myStringList = Arrays.asList(StringUtils.split(password, " :"));
+		final String value = getValue(myStringList, "byr");
+		final boolean checkIntRange = checkIntRange(value, 1920, 2002);
 		if (!checkIntRange) {
 			return false;
 		}
-		String valueiyr = getValue(myStringList, "iyr");
-		boolean checkIntRangeiyr = checkIntRange(valueiyr, 2010, 2020);
+		final String valueiyr = getValue(myStringList, "iyr");
+		final boolean checkIntRangeiyr = checkIntRange(valueiyr, 2010, 2020);
 		if (!checkIntRangeiyr) {
 			return false;
 		}
 
-		String valueeyr = getValue(myStringList, "eyr");
-		boolean checkIntRangeeyr = checkIntRange(valueeyr, 2020, 2030);
+		final String valueeyr = getValue(myStringList, "eyr");
+		final boolean checkIntRangeeyr = checkIntRange(valueeyr, 2020, 2030);
 		if (!checkIntRangeeyr) {
 			return false;
 		}
 
-		String valuehgt = getValue(myStringList, "hgt");
-		boolean checkHgt = checkHgt(valuehgt);
+		final String valuehgt = getValue(myStringList, "hgt");
+		final boolean checkHgt = checkHgt(valuehgt);
 		if (!checkHgt) {
 			return false;
 		}
 
-		String valuehcl = getValue(myStringList, "hcl");
-		boolean checkHcl = checkPattern(valuehcl, "#[0-9a-f]{6}");
+		final String valuehcl = getValue(myStringList, "hcl");
+		final boolean checkHcl = checkPattern(valuehcl, "#[0-9a-f]{6}");
 		if (!checkHcl) {
 			return false;
 		}
 
-		String valueecl = getValue(myStringList, "ecl");
-		boolean checkEcl = checkPattern(valueecl, "amb|blu|brn|gry|grn|hzl|oth");
+		final String valueecl = getValue(myStringList, "ecl");
+		final boolean checkEcl = checkPattern(valueecl, "amb|blu|brn|gry|grn|hzl|oth");
 		if (!checkEcl) {
 			return false;
 		}
 
-		String valuePid = getValue(myStringList, "pid");
-		boolean checkPid = checkPattern(valuePid, "[0-9]{9}");
+		final String valuePid = getValue(myStringList, "pid");
+		final boolean checkPid = checkPattern(valuePid, "[0-9]{9}");
 		return checkPid;
 	}
 
-
-	private boolean checkHgt(String hgt) {
+	private boolean checkHgt(final String hgt) {
 		if (hgt.endsWith("cm")) {
 			return checkIntRange(hgt.substring(0, hgt.length() - 2), 150, 193);
 		}
@@ -134,13 +132,12 @@ public class Day4 extends BaseTest {
 		return false;
 	}
 
-	private String getValue(final List<String> myStringList, String name) {
-		int index = myStringList.indexOf(name);
+	private String getValue(final List<String> myStringList, final String name) {
+		final int index = myStringList.indexOf(name);
 		if (index < 0 || index > myStringList.size()) {
 			return null;
 		}
 		return myStringList.get(index + 1);
 	}
-
 
 }

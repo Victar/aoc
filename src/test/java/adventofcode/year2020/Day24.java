@@ -13,18 +13,16 @@ import lombok.Data;
 
 public class Day24 extends BaseTest {
 
-	@Test
-	public void singleCheck() {
+	@Test public void singleCheck() {
 		System.out.println(stringToHex("esew"));
 	}
 
-	@Test
-	public void runSilver() throws Exception {
+	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day24/input.txt");
-		Map<Hex, Integer> map = new HashMap<>();
-		for (String input : data) {
+		final Map<Hex, Integer> map = new HashMap<>();
+		for (final String input : data) {
 			if (StringUtils.isNotEmpty(input)) {
-				Hex hex = stringToHex(input);
+				final Hex hex = stringToHex(input);
 				if (map.containsKey(hex)) {
 					map.put(hex, map.get(hex) + 1);
 				} else {
@@ -33,7 +31,7 @@ public class Day24 extends BaseTest {
 			}
 		}
 		int count = 0;
-		for (Map.Entry<Hex, Integer> entry : map.entrySet()) {
+		for (final Map.Entry<Hex, Integer> entry : map.entrySet()) {
 			System.out.println(entry.getKey() + " => " + entry.getValue());
 			if (entry.getValue() % 2 == 1) {
 				count++;
@@ -45,9 +43,9 @@ public class Day24 extends BaseTest {
 	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day24/input.txt");
 		List<Hex> list = new ArrayList<>();
-		for (String input : data) {
+		for (final String input : data) {
 			if (StringUtils.isNotEmpty(input)) {
-				Hex hex = stringToHex(input);
+				final Hex hex = stringToHex(input);
 				if (list.contains(hex)) {
 					list.remove(hex);
 				} else {
@@ -56,19 +54,19 @@ public class Day24 extends BaseTest {
 			}
 		}
 		int SIZE = 50;
-		for (int i = 0; i < 100; i++){
+		for (int i = 0; i < 100; i++) {
 			list = makeRound(list, ++SIZE);
 		}
 		System.out.println(list.size());
 	}
 
-	public List<Hex> makeRound(List<Hex> currentList, int size) {
-		List<Hex> result = new ArrayList<>();
+	public List<Hex> makeRound(final List<Hex> currentList, final int size) {
+		final List<Hex> result = new ArrayList<>();
 		for (int i = -size; i <= size; i++) {
 			for (int j = -size; j <= size; j++) {
-				Hex current = new Hex(i, j);
-				int countBlackNeighbors = countBlackNeighbors(current, currentList);
-				boolean isBlack = currentList.contains(current);
+				final Hex current = new Hex(i, j);
+				final int countBlackNeighbors = countBlackNeighbors(current, currentList);
+				final boolean isBlack = currentList.contains(current);
 				if (isBlack && countBlackNeighbors != 0 && countBlackNeighbors <= 2) {
 					result.add(current);
 				}
@@ -80,7 +78,7 @@ public class Day24 extends BaseTest {
 		return result;
 	}
 
-	public int countBlackNeighbors(Hex hex, List<Hex> currentList) {
+	public int countBlackNeighbors(final Hex hex, final List<Hex> currentList) {
 		int count = 0;
 		if (currentList.contains(new Hex(hex.x + 1, hex.y))) {
 			count++;
@@ -154,18 +152,18 @@ public class Day24 extends BaseTest {
 
 			final Hex hex = (Hex) o;
 
-			if (x != hex.x) return false;
-			return y == hex.y;
+			if (this.x != hex.x) return false;
+			return this.y == hex.y;
 		}
 
 		@Override public int hashCode() {
-			int result = x;
-			result = 31 * result + y;
+			int result = this.x;
+			result = 31 * result + this.y;
 			return result;
 		}
 
 		@Override public String toString() {
-			return "Hex{" + "x=" + x + ", y=" + y + '}';
+			return "Hex{" + "x=" + this.x + ", y=" + this.y + '}';
 		}
 	}
 }

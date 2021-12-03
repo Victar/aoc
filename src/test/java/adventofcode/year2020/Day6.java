@@ -2,7 +2,6 @@ package adventofcode.year2020;
 
 import java.util.ArrayList;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,9 +18,9 @@ public class Day6 extends BaseTest {
 		final ArrayList<String> data = readStringFromFile("year2020/day6/input.txt");
 		int count = 0;
 		String currentGroups = "";
-		for (String input : data) {
+		for (final String input : data) {
 			if (StringUtils.isEmpty(input)) {
-				int current = uniqueCharacters(currentGroups);
+				final int current = uniqueCharacters(currentGroups);
 				count += current;
 				currentGroups = "";
 
@@ -29,7 +28,7 @@ public class Day6 extends BaseTest {
 				currentGroups += input;
 			}
 		}
-		int current = uniqueCharacters(currentGroups);
+		final int current = uniqueCharacters(currentGroups);
 		count += current;
 		System.out.println(count);
 	}
@@ -39,9 +38,9 @@ public class Day6 extends BaseTest {
 		int count = 0;
 		String currentGroups = "";
 		boolean isEmpty = true;
-		for (String input : data) {
+		for (final String input : data) {
 			if (StringUtils.isEmpty(input)) {
-				int current = uniqueCharacters(currentGroups);
+				final int current = uniqueCharacters(currentGroups);
 				count += current;
 				currentGroups = "";
 				isEmpty = true;
@@ -55,10 +54,9 @@ public class Day6 extends BaseTest {
 				}
 			}
 		}
-		int current = uniqueCharacters(currentGroups);
+		final int current = uniqueCharacters(currentGroups);
 		count += current;
 		System.out.println(count);
 	}
-
 
 }

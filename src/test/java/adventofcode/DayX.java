@@ -12,11 +12,9 @@ public class DayX extends BaseTest {
 
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/dayX/input_sample.txt");
-		int count = 0;
-		for (String input : data) {
-			count = input.length();
+		for (final String input : data) {
+			System.out.println(input);
 		}
-		System.out.println(count);
 	}
 
 }

@@ -16,65 +16,63 @@ public class Day19 extends BaseTest {
 	@Test public void singleCheck() {
 	}
 
-	@Test
-	public void runSilver() throws Exception {
+	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day19/input.txt");
-		ArrayList<Rule> rulesList = new ArrayList<>();
-		ArrayList<String> messageList = new ArrayList<>();
+		final ArrayList<Rule> rulesList = new ArrayList<>();
+		final ArrayList<String> messageList = new ArrayList<>();
 		fillData(data, rulesList, messageList);
 		rulesList.sort(Comparator.comparing(a -> a.getNum()));
-		Rule rule0 = rulesList.stream().filter(l -> l.getNum() == 0).findFirst().orElse(null);
-		String regExp0 = rule0.toRegExpString();
+		final Rule rule0 = rulesList.stream().filter(l -> l.getNum() == 0).findFirst().orElse(null);
+		final String regExp0 = rule0.toRegExpString();
 		//		System.out.println(regExp0);
 		int count = 0;
-		for (String message : messageList){
-			if (message.matches(regExp0)){
+		for (final String message : messageList) {
+			if (message.matches(regExp0)) {
 				count++;
 			}
 		}
 		System.out.println(count);
 	}
 
-	@Test
-	public void runGold() throws Exception {
+	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day19/input_replace.txt");
-		ArrayList<Rule> rulesList = new ArrayList<>();
-		ArrayList<String> messageList = new ArrayList<>();
+		final ArrayList<Rule> rulesList = new ArrayList<>();
+		final ArrayList<String> messageList = new ArrayList<>();
 		fillData(data, rulesList, messageList);
 		rulesList.sort(Comparator.comparing(a -> a.getNum()));
-		Rule rule0 = rulesList.stream().filter(l -> l.getNum() == 0).findFirst().orElse(null);
-		String regExp0 = rule0.toRegExpString();
-//		System.out.println(regExp0);
+		final Rule rule0 = rulesList.stream().filter(l -> l.getNum() == 0).findFirst().orElse(null);
+		final String regExp0 = rule0.toRegExpString();
+		//		System.out.println(regExp0);
 		int count = 0;
-		for (String message : messageList){
-			if (message.matches(regExp0)){
+		for (final String message : messageList) {
+			if (message.matches(regExp0)) {
 				count++;
 			}
 		}
 		System.out.println(count);
 	}
 
-	public void fillData(final ArrayList<String> data, final ArrayList<Rule> rulesList, final ArrayList<String> messageList){
-		for (String input : data) {
+	public void fillData(final ArrayList<String> data, final ArrayList<Rule> rulesList, final ArrayList<String> messageList) {
+		for (final String input : data) {
 			if (input.contains(":")) {
 				//parse rule
-				String[] inputArray = StringUtils.split(input, ":\\|");
-				int ruleNumber = Integer.parseInt(inputArray[0]);
-				Rule currentRule = rulesList.stream().filter(l -> l.getNum()==ruleNumber).findFirst().orElse(null);
+				final String[] inputArray = StringUtils.split(input, ":\\|");
+				final int ruleNumber = Integer.parseInt(inputArray[0]);
+				Rule currentRule = rulesList.stream().filter(l -> l.getNum() == ruleNumber).findFirst().orElse(null);
 				if (currentRule == null) {
 					currentRule = new Rule(ruleNumber);
 					rulesList.add(currentRule);
 				}
-				String input2 = inputArray[1];
-				if (input2.contains("a")){
+				final String input2 = inputArray[1];
+				if (input2.contains("a")) {
 					currentRule.setC("a");
-				}else if(input2.contains("b")){
+				} else if (input2.contains("b")) {
 					currentRule.setC("b");
-				}else {
-					String[] childLeft = inputArray[1].split(" ");
+				} else {
+					final String[] childLeft = inputArray[1].split(" ");
 					for (int i = 0; i < childLeft.length; i++) {
 						if (StringUtils.isNotEmpty(childLeft[i])) {
-							int childRuleNumber = Integer.parseInt(childLeft[i].trim());
+							final int childRuleNumber = Integer.parseInt(childLeft[i].trim());
 							Rule childRule = rulesList.stream().filter(l -> l.getNum() == childRuleNumber).findFirst().orElse(null);
 							if (childRule == null) {
 								childRule = new Rule(childRuleNumber);
@@ -84,14 +82,13 @@ public class Day19 extends BaseTest {
 						}
 					}
 				}
-				if (inputArray.length ==3){
-					String[]  childRight = inputArray[2].split(" ");
+				if (inputArray.length == 3) {
+					final String[] childRight = inputArray[2].split(" ");
 					for (int i = 0; i < childRight.length; i++) {
 						if (StringUtils.isNotEmpty(childRight[i])) {
 
-							int childRuleNumber = Integer.parseInt(childRight[i].trim());
-							Rule childRule =
-									rulesList.stream().filter(l -> l.getNum() == childRuleNumber).findFirst().orElse(null);
+							final int childRuleNumber = Integer.parseInt(childRight[i].trim());
+							Rule childRule = rulesList.stream().filter(l -> l.getNum() == childRuleNumber).findFirst().orElse(null);
 							if (childRule == null) {
 								childRule = new Rule(childRuleNumber);
 								rulesList.add(childRule);
@@ -100,47 +97,47 @@ public class Day19 extends BaseTest {
 						}
 					}
 				}
-			}else{
-				if (StringUtils.isNotEmpty(input)){
+			} else {
+				if (StringUtils.isNotEmpty(input)) {
 					messageList.add(input);
 				}
 			}
 		}
 	}
 
+	@Data @ToString class Rule {
 
-
-
-	@Data
-	@ToString
-	class Rule{
 		int num;
 		List<Rule> left = new ArrayList<>();
 		List<Rule> right = new ArrayList<>();
-		String c = null;
+		String c;
 
-		int  goldVisitedTime = 0;
+		int goldVisitedTime;
+
+		public Rule(final int num) {
+			this.num = num;
+		}
 
 		public String toRegExpString() {
-			if (StringUtils.isNotEmpty(c)){
-				return c;
+			if (StringUtils.isNotEmpty(this.c)) {
+				return this.c;
 			}
-			StringBuilder sb = new StringBuilder("(");
-			for (Rule rule : left) {
-				if (num!=rule.num || goldVisitedTime<10) {
-					if (num==rule.num) {
-						goldVisitedTime++;
+			final StringBuilder sb = new StringBuilder("(");
+			for (final Rule rule : this.left) {
+				if (this.num != rule.num || this.goldVisitedTime < 10) {
+					if (this.num == rule.num) {
+						this.goldVisitedTime++;
 					}
 					sb.append("(" + rule.toRegExpString() + ")");
 				}
 			}
 			sb.append(")");
-			if (right.size() > 0){
+			if (this.right.size() > 0) {
 				sb.append("|(");
-				for (Rule rule : right) {
-					if (num!=rule.num || goldVisitedTime<10) {
-						if (num==rule.num) {
-							goldVisitedTime++;
+				for (final Rule rule : this.right) {
+					if (this.num != rule.num || this.goldVisitedTime < 10) {
+						if (this.num == rule.num) {
+							this.goldVisitedTime++;
 						}
 						sb.append("(" + rule.toRegExpString() + ")");
 					}
@@ -150,23 +147,20 @@ public class Day19 extends BaseTest {
 			return sb.toString();
 		}
 
-
-		public Rule(final int num) {
-			this.num = num;
-		}
-		public void addLeft(Rule rule) {
-			left.add(rule);
-		}
-		public void addRight(Rule rule) {
-			right.add(rule);
+		public void addLeft(final Rule rule) {
+			this.left.add(rule);
 		}
 
-		public void setC(String c){
+		public void addRight(final Rule rule) {
+			this.right.add(rule);
+		}
+
+		public void setC(final String c) {
 			this.c = c;
 		}
 
 		@Override public String toString() {
-			return "Rule{" + "num=" + num + ", left=" + left.size() + ", right=" + right.size() + ", c='" + c + '\'' + '}';
+			return "Rule{" + "num=" + this.num + ", left=" + this.left.size() + ", right=" + this.right.size() + ", c='" + this.c + '\'' + '}';
 		}
 	}
 }

@@ -15,7 +15,7 @@ import lombok.Data;
 public class Day7 extends BaseTest {
 
 	@Test @Ignore public void singleCheck() {
-		ArrayList<Bag> bagList = new ArrayList<Bag>();
+		final ArrayList<Bag> bagList = new ArrayList<Bag>();
 		System.out.println(parseBag("light red bags contain 1 bright white bag, 2 muted yellow bags.", bagList));
 		System.out.println(parseBag("bright white bags contain 1 shiny gold bag.", bagList));
 		System.out.println(parseBag("dotted black bags contain no other bags.", bagList));
@@ -24,22 +24,22 @@ public class Day7 extends BaseTest {
 
 	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day7/input.txt");
-		ArrayList<Bag> bagList = new ArrayList<Bag>();
-		for (String input : data) {
+		final ArrayList<Bag> bagList = new ArrayList<Bag>();
+		for (final String input : data) {
 			parseBag(input, bagList);
 		}
-		Bag current = bagList.stream().filter(l -> l.getColour().equals("shiny gold")).findFirst().orElse(null);
+		final Bag current = bagList.stream().filter(l -> l.getColour().equals("shiny gold")).findFirst().orElse(null);
 		System.out.println(current.bagContains());
 	}
 
 	@Test public void runSilver() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2020/day7/input.txt");
 		int count = 0;
-		ArrayList<Bag> bagList = new ArrayList<Bag>();
-		for (String input : data) {
+		final ArrayList<Bag> bagList = new ArrayList<Bag>();
+		for (final String input : data) {
 			parseBag(input, bagList);
 		}
-		for (Bag bag : bagList) {
+		for (final Bag bag : bagList) {
 			if (bag.isBagContains("shiny gold")) {
 				count++;
 			}
@@ -47,23 +47,23 @@ public class Day7 extends BaseTest {
 		System.out.println(count);
 	}
 
-	private Bag parseBag(String input, ArrayList<Bag> bagsList) {
-		String bagColour = input.substring(0, input.indexOf(" bags contain "));
+	private Bag parseBag(final String input, final ArrayList<Bag> bagsList) {
+		final String bagColour = input.substring(0, input.indexOf(" bags contain "));
 
 		Bag current = bagsList.stream().filter(l -> l.getColour().equals(bagColour)).findFirst().orElse(null);
 		if (current == null) {
 			current = new Bag(bagColour);
 			bagsList.add(current);
 		}
-		String containsBags = input.substring(bagColour.length() + 14);
-		String[] containsBagsArr = StringUtils.split(containsBags, ",.");
-		for (String b : containsBagsArr) {
-			String innerBag = b.trim();
+		final String containsBags = input.substring(bagColour.length() + 14);
+		final String[] containsBagsArr = StringUtils.split(containsBags, ",.");
+		for (final String b : containsBagsArr) {
+			final String innerBag = b.trim();
 			if (innerBag.startsWith("no")) {
 			} else {
-				String[] innerBagArray = StringUtils.split(innerBag, " ");
-				int innerBagCount = Integer.parseInt(innerBagArray[0]);
-				String innerBagColour = innerBagArray[1] + " " + innerBagArray[2];
+				final String[] innerBagArray = StringUtils.split(innerBag, " ");
+				final int innerBagCount = Integer.parseInt(innerBagArray[0]);
+				final String innerBagColour = innerBagArray[1] + " " + innerBagArray[2];
 				//				System.out.println(innerBagCount + " -> " + innerBagColour);
 				Bag currentChild = bagsList.stream().filter(l -> l.getColour().equals(innerBagColour)).findFirst().orElse(null);
 				if (currentChild == null) {
@@ -87,22 +87,22 @@ public class Day7 extends BaseTest {
 			this.containsBags = new ArrayList<Bag>();
 		}
 
-		public void addBag(Bag bag, int count) {
-			Bag current = containsBags.stream().filter(l -> l.getColour().equals(bag.getColour())).findFirst().orElse(null);
+		public void addBag(final Bag bag, final int count) {
+			final Bag current = this.containsBags.stream().filter(l -> l.getColour().equals(bag.getColour())).findFirst().orElse(null);
 			if (current == null) {
 				//				current = new Bag(bagColour);
 				this.containsBags.add(bag);
 			}
-			bagsCountMap.put(bag, count);
+			this.bagsCountMap.put(bag, count);
 			//			count += count;
 		}
 
-		public boolean isBagContains(String bagColour) {
-			Bag current = containsBags.stream().filter(l -> l.getColour().equals(bagColour)).findFirst().orElse(null);
+		public boolean isBagContains(final String bagColour) {
+			final Bag current = this.containsBags.stream().filter(l -> l.getColour().equals(bagColour)).findFirst().orElse(null);
 			if (current != null) {
 				return true;
 			}
-			for (Bag innerBag : containsBags) {
+			for (final Bag innerBag : this.containsBags) {
 				if (innerBag.isBagContains(bagColour)) {
 					return true;
 				}
@@ -112,8 +112,8 @@ public class Day7 extends BaseTest {
 
 		public int bagContains() {
 			int totalCount = 0;
-			for (Bag innerBag : containsBags) {
-				totalCount += bagsCountMap.get(innerBag) * (innerBag.bagContains() + 1);
+			for (final Bag innerBag : this.containsBags) {
+				totalCount += this.bagsCountMap.get(innerBag) * (innerBag.bagContains() + 1);
 			}
 			return totalCount;
 		}
@@ -124,15 +124,15 @@ public class Day7 extends BaseTest {
 
 			final Bag bag = (Bag) o;
 
-			return colour != null ? colour.equals(bag.colour) : bag.colour == null;
+			return this.colour != null ? this.colour.equals(bag.colour) : bag.colour == null;
 		}
 
 		@Override public int hashCode() {
-			return colour != null ? colour.hashCode() : 0;
+			return this.colour != null ? this.colour.hashCode() : 0;
 		}
 
 		@Override public String toString() {
-			return "Bag{" + "colour='" + colour + '\'' + ", containsBags=" + containsBags + '}' + "\n";
+			return "Bag{" + "colour='" + this.colour + '\'' + ", containsBags=" + this.containsBags + '}' + "\n";
 		}
 	}
 }

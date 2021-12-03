@@ -44,38 +44,38 @@ public class Day11 extends BaseTest {
 
 	}
 
-	public int countSeats(ArrayList<String> data) {
+	public int countSeats(final ArrayList<String> data) {
 		int total = 0;
-		for (String s : data) {
+		for (final String s : data) {
 			total += StringUtils.countMatches(s, '#');
 		}
 		return total;
 	}
 
-	public void printArray(ArrayList<String> data) {
-		for (String s : data) {
+	public void printArray(final ArrayList<String> data) {
+		for (final String s : data) {
 			System.out.println(s);
 		}
 	}
 
-	public void doRound(ArrayList<String> data) {
-		ArrayList<String> dataClone = (ArrayList<String>) data.clone();
+	public void doRound(final ArrayList<String> data) {
+		final ArrayList<String> dataClone = (ArrayList<String>) data.clone();
 		for (int i = 0; i < data.size(); i++) {
 			for (int j = 0; j < data.get(i).length(); j++) {
-				char c = data.get(i).charAt(j);
+				final char c = data.get(i).charAt(j);
 				if (c == '.') {
 					//do nothing
 				}
 				if (c == 'L') {
 					if (hasAdjacentGold(dataClone, i, j, '#') == 0) {
-						StringBuilder currentString = new StringBuilder(data.get(i));
+						final StringBuilder currentString = new StringBuilder(data.get(i));
 						currentString.setCharAt(j, '#');
 						data.set(i, currentString.toString());
 					}
 				}
 				if (c == '#') {
 					if (hasAdjacentGold(dataClone, i, j, '#') >= 5) {
-						StringBuilder currentString = new StringBuilder(data.get(i));
+						final StringBuilder currentString = new StringBuilder(data.get(i));
 						currentString.setCharAt(j, 'L');
 						data.set(i, currentString.toString());
 					}
@@ -85,13 +85,13 @@ public class Day11 extends BaseTest {
 		}
 	}
 
-	public int hasAdjacentGold(ArrayList<String> data, int i, int j, char toCheck) {
+	public int hasAdjacentGold(final ArrayList<String> data, final int i, final int j, final char toCheck) {
 		int count = 0;
 		//Check Row lest X
-		String currentString = data.get(i);
-		int currentLength = currentString.length();
+		final String currentString = data.get(i);
+		final int currentLength = currentString.length();
 
-		String currentStringLeft = currentString.substring(0, j);
+		final String currentStringLeft = currentString.substring(0, j);
 		for (int l = currentStringLeft.length() - 1; l >= 0; l--) {
 			if (currentStringLeft.charAt(l) == 'L') {
 				break;
@@ -102,7 +102,7 @@ public class Day11 extends BaseTest {
 			}
 		}
 
-		String currentStringRight = currentString.substring(j + 1);
+		final String currentStringRight = currentString.substring(j + 1);
 		for (int l = 0; l < currentStringRight.length(); l++) {
 			if (currentStringRight.charAt(l) == 'L') {
 				break;
@@ -175,56 +175,56 @@ public class Day11 extends BaseTest {
 		return count;
 	}
 
-	public int hasAdjacent(ArrayList<String> data, int i, int j, char toCheck) {
+	public int hasAdjacent(final ArrayList<String> data, final int i, final int j, final char toCheck) {
 		int count = 0;
 
 		try {
 			if (data.get(i).charAt(j + 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i).charAt(j - 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i - 1).charAt(j) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i - 1).charAt(j - 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i - 1).charAt(j + 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i + 1).charAt(j - 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i + 1).charAt(j) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		try {
 			if (data.get(i + 1).charAt(j + 1) == toCheck) {
 				count++;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 		return count;
 

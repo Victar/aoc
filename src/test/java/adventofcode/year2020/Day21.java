@@ -10,29 +10,29 @@ import org.junit.Test;
 
 import adventofcode.BaseTest;
 
+
 import static java.util.stream.Collectors.joining;
 
 public class Day21 extends BaseTest {
 
 	private static final String FILE_NAME = "year2020/day21/input.txt";
 
-	@Test
-	public void runBoth() throws Exception {
+	@Test public void runBoth() throws Exception {
 
 		final ArrayList<String> data = readStringFromFile(FILE_NAME);
 
-		Map<Set<String>, Set<String>> ingredientsAllergensMap = new LinkedHashMap<>();
-		Map<String, Set<String>> allergenIngredients = new LinkedHashMap<>();
-		Map<String, Set<String>> ingredientsAllergens = new LinkedHashMap<>();
+		final Map<Set<String>, Set<String>> ingredientsAllergensMap = new LinkedHashMap<>();
+		final Map<String, Set<String>> allergenIngredients = new LinkedHashMap<>();
+		final Map<String, Set<String>> ingredientsAllergens = new LinkedHashMap<>();
 
-		for (String input : data) {
-			Set<String> ingredientList = new HashSet<>();
-			Set<String> allergenList = new HashSet<>();
-			String[] inputArr = input.split("\\(contains");
-			String[] ingredientArr = inputArr[0].split(" ");
-			String[] allergenArr = inputArr[1].substring(0, inputArr[1].length() - 1).split(",");
+		for (final String input : data) {
+			final Set<String> ingredientList = new HashSet<>();
+			final Set<String> allergenList = new HashSet<>();
+			final String[] inputArr = input.split("\\(contains");
+			final String[] ingredientArr = inputArr[0].split(" ");
+			final String[] allergenArr = inputArr[1].substring(0, inputArr[1].length() - 1).split(",");
 			for (int i = 0; i < ingredientArr.length; i++) {
-				String currentIngredient = ingredientArr[i].trim();
+				final String currentIngredient = ingredientArr[i].trim();
 				ingredientList.add(currentIngredient);
 				Set<String> currentIngridientAllergens = null;
 				if (ingredientsAllergens.get(currentIngredient) != null) {
@@ -46,7 +46,7 @@ public class Day21 extends BaseTest {
 				}
 			}
 			for (int i = 0; i < allergenArr.length; i++) {
-				String currentAllergen = allergenArr[i].trim();
+				final String currentAllergen = allergenArr[i].trim();
 				allergenList.add(allergenArr[i].trim());
 				Set<String> currentAllergenIngridients = null;
 				if (allergenIngredients.get(currentAllergen) != null) {
@@ -62,10 +62,10 @@ public class Day21 extends BaseTest {
 			ingredientsAllergensMap.put(ingredientList, allergenList);
 		}
 
-		for (Map.Entry<Set<String>, Set<String>> entry : ingredientsAllergensMap.entrySet()) {
-			for (String allergen : entry.getValue()) {
+		for (final Map.Entry<Set<String>, Set<String>> entry : ingredientsAllergensMap.entrySet()) {
+			for (final String allergen : entry.getValue()) {
 				final Set<String> toRemove = new HashSet<String>();
-				for (String ingredient : allergenIngredients.get(allergen)) {
+				for (final String ingredient : allergenIngredients.get(allergen)) {
 					if (!entry.getKey().contains(ingredient)) {
 						toRemove.add(ingredient);
 					}
@@ -75,8 +75,8 @@ public class Day21 extends BaseTest {
 		}
 
 		int count = 0;
-		for (Map.Entry<Set<String>, Set<String>> entry : ingredientsAllergensMap.entrySet()) {
-			for (String allergen : entry.getKey()) {
+		for (final Map.Entry<Set<String>, Set<String>> entry : ingredientsAllergensMap.entrySet()) {
+			for (final String allergen : entry.getKey()) {
 				if (!anyContains(allergen, allergenIngredients)) {
 					count++;
 				}
@@ -86,13 +86,13 @@ public class Day21 extends BaseTest {
 		System.out.println(count);
 
 		//part 2
-		Map<String, String> ingredientAllergen = new LinkedHashMap<>();
+		final Map<String, String> ingredientAllergen = new LinkedHashMap<>();
 		for (int i = 0; i < allergenIngredients.size(); i++) {
-			for (Map.Entry<String, Set<String>> entry : allergenIngredients.entrySet()) {
+			for (final Map.Entry<String, Set<String>> entry : allergenIngredients.entrySet()) {
 				if (entry.getValue().size() == 1) {
 					final String value = entry.getValue().iterator().next();
 					ingredientAllergen.put(entry.getKey(), value);
-					for (Map.Entry<String, Set<String>> entry2 : allergenIngredients.entrySet()) {
+					for (final Map.Entry<String, Set<String>> entry2 : allergenIngredients.entrySet()) {
 						entry2.getValue().remove(value);
 					}
 				}
@@ -103,8 +103,8 @@ public class Day21 extends BaseTest {
 				ingredientAllergen.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).collect(joining(",")));
 	}
 
-	public boolean anyContains(String ingredient, Map<String, Set<String>> allergenIngredients) {
-		for (Map.Entry<String, Set<String>> entry : allergenIngredients.entrySet()) {
+	public boolean anyContains(final String ingredient, final Map<String, Set<String>> allergenIngredients) {
+		for (final Map.Entry<String, Set<String>> entry : allergenIngredients.entrySet()) {
 			if (entry.getValue().contains(ingredient)) {
 				return true;
 			}
