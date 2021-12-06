@@ -1,7 +1,6 @@
 package adventofcode.year2021;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -49,7 +48,6 @@ public class Day6 extends BaseTest {
 			if (current == 8) {
 				fishes.setAge8(fishes.getAge8() + 1);
 			}
-
 		}
 
 		for (int i = 0; i < round; i++) {
