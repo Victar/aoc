@@ -28,10 +28,10 @@ public class Day9 extends BaseTest {
 			for (int j = 0; j < ySize; j++) {
 				final int current = points[i][j];
 				boolean min = true;
-				for (int l = -1; l <= 1; l++) {
-					for (int m = -1; m <= 1; m++) {
+				for (int l = i - 1; l <= i + 1; l++) {
+					for (int m = j - 1; m <= j + 1; m++) {
 						try {
-							if (points[i + l][j + m] < current) {
+							if (points[l][m] < current) {
 								min = false;
 							}
 						} catch (final Exception e) {
@@ -63,10 +63,10 @@ public class Day9 extends BaseTest {
 			for (int j = 0; j < ySize; j++) {
 				final int current = points[i][j];
 				boolean min = true;
-				for (int l = -1; l <= 1; l++) {
-					for (int m = -1; m <= 1; m++) {
+				for (int l = i - 1; l <= i + 1; l++) {
+					for (int m = j - 1; m <= j + 1; m++) {
 						try {
-							if (points[i + l][j + m] < current) {
+							if (points[l][m] < current) {
 								min = false;
 							}
 						} catch (final Exception e) {
@@ -91,17 +91,17 @@ public class Day9 extends BaseTest {
 		} else {
 			basians.add(key);
 			final int current = points[i][j];
-			for (int l = -1; l <= 1; l++) {
-				for (int m = -1; m <= 1; m++) {
+			for (int l = i - 1; l <= i + 1; l++) {
+				for (int m = j - 1; m <= j + 1; m++) {
 					try {
-						final int check = points[i + l][j + m];
-						if (l == 0 || m == 0) {
+						final int check = points[l][m];
+						if (l == i || m == j) {
 							if (check < 9 && check > current) {
-								final String keyCheck = "i" + (i + l) + "j" + (j + m) + "|" + points[i + l][j + m];
+								final String keyCheck = "i" + l + "j" + m + "|" + points[l][m];
 								if (basians.contains(keyCheck)) {
 									//already added
 								} else {
-									basians.addAll(getBasians(basians, points, i + l, j + m));
+									basians.addAll(getBasians(basians, points, l, m));
 									basians.add(keyCheck);
 
 								}
