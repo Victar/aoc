@@ -43,14 +43,36 @@ public class Day8 extends BaseTest {
 		return result;
 	}
 
+	public static String swapString(final String a, final int i, final int j) {
+		final char[] b = a.toCharArray();
+		final char ch;
+		ch = b[i];
+		b[i] = b[j];
+		b[j] = ch;
+		return String.valueOf(b);
+	}
+
+	public static void generatePermutation(String str, final int start, final int end, final Set result) {
+		if (start == end - 1) {
+			result.add(str);
+		} else {
+			for (int i = start; i < end; i++) {
+				str = swapString(str, start, i);
+				generatePermutation(str, start + 1, end, result);
+				str = swapString(str, start, i);
+			}
+		}
+	}
+
 	@Test public void runSingle() throws Exception {
+		getMasksPermute();
 		System.out.println(Signal.decode("cdfeb", "acedgfb"));
 	}
 
 	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2021/day8/input.txt");
 		int count = 0;
-		final ArrayList<String> allMasks = new ArrayList(getMasks());
+		final ArrayList<String> allMasks = new ArrayList(getMasksPermute());
 		for (final String input : data) {
 			final String[] arr = StringUtils.split(input, "\\|");
 			final String[] arr1 = StringUtils.split(arr[1], " ");
@@ -67,6 +89,12 @@ public class Day8 extends BaseTest {
 			}
 		}
 		System.out.println(count);
+	}
+
+	private Set<String> getMasksPermute() {
+		final Set<String> result = new HashSet();
+		generatePermutation("abcdefg", 0, 7, result);
+		return result;
 	}
 
 	private Set<String> getMasks() {

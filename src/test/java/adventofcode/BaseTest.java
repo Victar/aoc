@@ -40,6 +40,14 @@ public class BaseTest {
 		}
 	}
 
+	protected static long[] getDP(final int size, final long initValue) {
+		final long[] dp = new long[size];
+		for (int i = 0; i < dp.length; i++) {
+			dp[i] = initValue;
+		}
+		return dp;
+	}
+
 	protected ArrayList<Integer> readIntFromFile(final String fileName) throws FileNotFoundException {
 		final ArrayList<Integer> result = new ArrayList<>();
 		try (final Scanner s = new Scanner(new FileReader(getFullFilePath(fileName)))) {
