@@ -15,55 +15,29 @@ import lombok.Data;
 public class Day15 extends BaseTest {
 
 	@Test public void runSilver() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2021/day15/input.txt");
-		final int SIZE_Y = data.size();
-		final int SIZE_X = data.get(0).length();
-		final Node[][] NODES = new Node[SIZE_X][SIZE_Y];
-
-		for (int i = 0; i < SIZE_Y; i++) {
-			for (int j = 0; j < SIZE_X; j++) {
-				final int risk = Integer.parseInt("" + data.get(j).charAt(i));
-				final Node currentNode = new Node(j, i, risk);
-				NODES[j][i] = currentNode;
-			}
-		}
-
-		//set neighbors
-		for (int y = 0; y < SIZE_Y; y++) {
-			for (int x = 0; x < SIZE_X; x++) {
-				for (int l = x - 1; l <= x + 1; l++) {
-					for (int m = y - 1; m <= y + 1; m++) {
-						if (l == x || m == y) {
-							if (l >= 0 && l < SIZE_X && m >= 0 && m < SIZE_Y && (l != x || m != y)) {
-								NODES[x][y].addDestination(NODES[l][m]);
-							}
-						}
-					}
-				}
-			}
-		}
-		final Node source = NODES[0][0];
-		GraphUtil.calculatePath(source, 0);
-		System.out.println(NODES[SIZE_X - 1][SIZE_Y - 1].getDistance());
+		runAny(1);
 	}
 
 	@Test public void runGold() throws Exception {
+		runAny(5);
+	}
+
+	public void runAny(final int size) throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2021/day15/input.txt");
 
 		final int SIZE_Y = data.size();
 		final int SIZE_X = data.get(0).length();
-
-		final int SIZE_Y_G = SIZE_Y * 5;
-		final int SIZE_X_G = SIZE_X * 5;
+		final int SIZE_Y_G = SIZE_Y * size;
+		final int SIZE_X_G = SIZE_X * size;
 
 		final Node[][] NODES = new Node[SIZE_X_G][SIZE_Y_G];
 
-		for (int i = 0; i < SIZE_Y_G; i++) {
-			for (int j = 0; j < SIZE_X_G; j++) {
-				final int value = (Integer.parseInt("" + data.get(j % SIZE_X).charAt(i % SIZE_Y)) + (j / SIZE_X) + (i / SIZE_Y)) % 9;
+		for (int y = 0; y < SIZE_Y_G; y++) {
+			for (int x = 0; x < SIZE_X_G; x++) {
+				final int value = (Integer.parseInt("" + data.get(x % SIZE_X).charAt(y % SIZE_Y)) + (x / SIZE_X) + (y / SIZE_Y)) % 9;
 				final int risk = value == 0 ? 9 : value;
-				final Node currentNode = new Node(j, i, risk);
-				NODES[j][i] = currentNode;
+				final Node currentNode = new Node(x, y, risk);
+				NODES[x][y] = currentNode;
 			}
 		}
 
@@ -84,12 +58,18 @@ public class Day15 extends BaseTest {
 		final Node source = NODES[0][0];
 		GraphUtil.calculatePath(source, 0);
 		System.out.println(NODES[SIZE_X_G - 1][SIZE_Y_G - 1].getDistance());
+		printArray(NODES, SIZE_X_G, SIZE_Y_G, NODES[SIZE_X_G - 1][SIZE_Y_G - 1].getMinPath());
 	}
 
-	public void printArray(final Node[][] array, final int SIZE_Y_G, final int SIZE_X_G) {
-		for (int i = 0; i < SIZE_Y_G; i++) {
-			for (int j = 0; j < SIZE_X_G; j++) {
-				System.out.print(array[i][j].getRisk() + " ");
+	public void printArray(final Node[][] array, final int SIZE_X_G, final int SIZE_Y_G, final List<GraphUtil.Node> path) {
+		for (int x = 0; x < SIZE_X_G; x++) {
+			for (int y = 0; y < SIZE_Y_G; y++) {
+				final boolean inPath = path.contains(new Node(x, y, 0));
+				if (inPath) {
+					System.out.print("(" + array[x][y].getRisk() + ")");
+				} else {
+					System.out.print(" " + array[x][y].getRisk() + " ");
+				}
 			}
 			System.out.println();
 		}
