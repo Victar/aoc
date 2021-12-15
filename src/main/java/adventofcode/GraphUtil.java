@@ -17,7 +17,7 @@ public class GraphUtil {
 		final Set<Node> notVisited = new HashSet<>();
 		notVisited.add(from);
 		while (!notVisited.isEmpty()) {
-			final Node current = getMinNode(notVisited);
+			final Node current = getMinRiskNode(notVisited);
 			notVisited.remove(current);
 			for (final Map.Entry<Node, Integer> neighborEntry : current.getNeighbors().entrySet()) {
 				final Node neighbor = neighborEntry.getKey();
@@ -31,13 +31,13 @@ public class GraphUtil {
 		}
 	}
 
-	private static Node getMinNode(final Set<Node> unsettledNodes) {
+	private static Node getMinRiskNode(final Set<Node> notVisited) {
 		Node minRiskNode = null;
-		int minRisk = Integer.MAX_VALUE;
-		for (final Node node : unsettledNodes) {
+		int minRiskDistance = Integer.MAX_VALUE;
+		for (final Node node : notVisited) {
 			final int nodeDistance = node.getDistance();
-			if (nodeDistance < minRisk) {
-				minRisk = nodeDistance;
+			if (nodeDistance < minRiskDistance) {
+				minRiskDistance = nodeDistance;
 				minRiskNode = node;
 			}
 		}

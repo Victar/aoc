@@ -14,6 +14,39 @@ import lombok.Data;
 
 public class Day15 extends BaseTest {
 
+	@Test public void runSilver() throws Exception {
+		final ArrayList<String> data = readStringFromFile("year2021/day15/input.txt");
+		final int SIZE_Y = data.size();
+		final int SIZE_X = data.get(0).length();
+		final Node[][] NODES = new Node[SIZE_X][SIZE_Y];
+
+		for (int i = 0; i < SIZE_Y; i++) {
+			for (int j = 0; j < SIZE_X; j++) {
+				final int risk = Integer.parseInt("" + data.get(j).charAt(i));
+				final Node currentNode = new Node(j, i, risk);
+				NODES[j][i] = currentNode;
+			}
+		}
+
+		//set neighbors
+		for (int y = 0; y < SIZE_Y; y++) {
+			for (int x = 0; x < SIZE_X; x++) {
+				for (int l = x - 1; l <= x + 1; l++) {
+					for (int m = y - 1; m <= y + 1; m++) {
+						if (l == x || m == y) {
+							if (l >= 0 && l < SIZE_X && m >= 0 && m < SIZE_Y && (l != x || m != y)) {
+								NODES[x][y].addDestination(NODES[l][m]);
+							}
+						}
+					}
+				}
+			}
+		}
+		final Node source = NODES[0][0];
+		GraphUtil.calculatePath(source, 0);
+		System.out.println(NODES[SIZE_X - 1][SIZE_Y - 1].getDistance());
+	}
+
 	@Test public void runGold() throws Exception {
 		final ArrayList<String> data = readStringFromFile("year2021/day15/input.txt");
 
@@ -34,7 +67,7 @@ public class Day15 extends BaseTest {
 			}
 		}
 
-		//set neigborhs
+		//set neighbors
 		for (int y = 0; y < SIZE_Y_G; y++) {
 			for (int x = 0; x < SIZE_X_G; x++) {
 				for (int l = x - 1; l <= x + 1; l++) {
@@ -51,40 +84,6 @@ public class Day15 extends BaseTest {
 		final Node source = NODES[0][0];
 		GraphUtil.calculatePath(source, 0);
 		System.out.println(NODES[SIZE_X_G - 1][SIZE_Y_G - 1].getDistance());
-	}
-
-	@Test public void runSilver() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2021/day15/input.txt");
-		final int SIZE_Y = data.size();
-		final int SIZE_X = data.get(0).length();
-		final Node[][] NODES = new Node[SIZE_X][SIZE_Y];
-
-		for (int i = 0; i < SIZE_Y; i++) {
-			for (int j = 0; j < SIZE_X; j++) {
-				final int risk = Integer.parseInt("" + data.get(j).charAt(i));
-				final Node currentNode = new Node(j, i, risk);
-				NODES[j][i] = currentNode;
-			}
-		}
-
-		//set
-		for (int y = 0; y < SIZE_Y; y++) {
-			for (int x = 0; x < SIZE_X; x++) {
-				for (int l = x - 1; l <= x + 1; l++) {
-					for (int m = y - 1; m <= y + 1; m++) {
-						if (l == x || m == y) {
-							if (l >= 0 && l < SIZE_X && m >= 0 && m < SIZE_Y && (l != x || m != y)) {
-								NODES[x][y].addDestination(NODES[l][m]);
-							}
-						}
-					}
-				}
-			}
-		}
-		final Node source = NODES[0][0];
-		GraphUtil.calculatePath(source, 0);
-		System.out.println(NODES[SIZE_X - 1][SIZE_Y - 1].getDistance());
-
 	}
 
 	public void printArray(final Node[][] array, final int SIZE_Y_G, final int SIZE_X_G) {
