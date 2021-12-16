@@ -203,8 +203,9 @@ public class Day20 extends BaseTest {
 					sbX2.append(this.data.get(i).charAt(this.data.size() - 1));
 				}
 				final String s1 = StringUtils.replaceEach(this.data.get(0), new String[] { ".", "#" }, new String[] { "0", "1" });
-				final String s3 = StringUtils.replaceEach(StringUtils.reverse(this.data.get(this.data.size() - 1)), new String[] { ".", "#" },
-						new String[] { "0", "1" });
+				final String s3 =
+						StringUtils.replaceEach(StringUtils.reverse(this.data.get(this.data.size() - 1)), new String[] { ".", "#" },
+								new String[] { "0", "1" });
 				final String s2 = StringUtils.replaceEach(sbX2.toString(), new String[] { ".", "#" }, new String[] { "0", "1" });
 				final String s4 = StringUtils.replaceEach(sbX4.reverse().toString(), new String[] { ".", "#" }, new String[] { "0", "1" });
 

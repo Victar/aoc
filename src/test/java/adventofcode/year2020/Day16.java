@@ -32,12 +32,10 @@ public class Day16 extends BaseTest {
 								Integer.parseInt(splitNum[3])));
 			} else if (input.contains(",")) {
 				final String[] split = StringUtils.split(input, ",");
-				boolean isValid = true;
 				for (int i = 0; i < split.length; i++) {
 					final int num = Integer.parseInt(split[i]);
 					if (!isValid(num, validationMap)) {
 						error += num;
-						isValid = false;
 					}
 					validTickets.add(input);
 				}

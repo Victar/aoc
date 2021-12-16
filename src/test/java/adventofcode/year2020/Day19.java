@@ -160,7 +160,8 @@ public class Day19 extends BaseTest {
 		}
 
 		@Override public String toString() {
-			return "Rule{" + "num=" + this.num + ", left=" + this.left.size() + ", right=" + this.right.size() + ", c='" + this.c + '\'' + '}';
+			return "Rule{" + "num=" + this.num + ", left=" + this.left.size() + ", right=" + this.right.size() + ", c='" + this.c + '\''
+					+ '}';
 		}
 	}
 }
