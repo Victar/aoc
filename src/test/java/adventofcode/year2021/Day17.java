@@ -12,18 +12,19 @@ public class Day17 extends BaseTest {
 	static int yMin = -150;
 	static int yMax = -108;
 
-	//	int xMin = 20;
-	//	int xMax = 30;
-	//	int yMin = -10;
-	//	int yMax = -5;
 
-	@Test
-	public void runBoth() throws Exception {
+	//		static int xMin = 20;
+	//		static int xMax = 30;
+	//		static int yMin = -10;
+	//		static int yMax = -5;
+
+	@Test public void runBoth() throws Exception {
 		int maxY = 0;
 		int count = 0;
-		for (int x = -1000; x < 1000; x++) {
-			for (int y = -1000; y < 1000; y++) {
-				final Velocity current = new Velocity(x, y);
+		int yArea = Math.max(Math.abs(yMin), Math.abs(yMax));
+		for (int x = 0; x <= xMax; x++) {
+			for (int y = -yArea; y <= yArea; y++) {
+				final Velocity velocity = new Velocity(x, y);
 				int currentX = 0;
 				int currentY = 0;
 				int currentYMax = 0;
@@ -34,9 +35,9 @@ public class Day17 extends BaseTest {
 					currentYMax = Math.max(currentYMax, currentY);
 					hit = hit || isHit(currentX, currentY);
 					check = inArea(currentX, currentY);
-					currentX = current.x + currentX;
-					currentY = current.y + currentY;
-					current.updateVelocity();
+					currentX = velocity.x + currentX;
+					currentY = velocity.y + currentY;
+					velocity.updateVelocity();
 
 				}
 				if (hit) {
@@ -51,11 +52,11 @@ public class Day17 extends BaseTest {
 	}
 
 	public boolean isHit(final int currentX, final int currentY) {
-		return (this.xMin <= currentX) && (currentX <= this.xMax) && (this.yMin <= currentY) && (currentY <= this.yMax);
+		return (xMin <= currentX) && (currentX <= xMax) && (yMin <= currentY) && (currentY <= yMax);
 	}
 
 	public boolean inArea(final int currentX, final int currentY) {
-		return currentY >= this.yMin;
+		return currentY >= yMin;
 	}
 
 	@Data public class Velocity {
