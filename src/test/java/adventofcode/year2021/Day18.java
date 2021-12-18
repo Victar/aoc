@@ -205,21 +205,15 @@ public class Day18 extends BaseTest {
 					} else {
 						NumberSlow parentAnyParent = parentAny.parent;
 						NumberSlow cur;
-						boolean f = false;
-						while (parentAnyParent != null && !f) {
+						boolean found = false;
+						while (parentAnyParent != null && !found) {
 							cur = parentAnyParent;
 							parentAnyParent = parentAnyParent.parent;
-							if (isRight) {
-								if (parentAnyParent != null && parentAnyParent.right != cur) {
-									nodeToUpdate = parentAnyParent.right;
-									f = true;
-								}
-							} else {
-								if (parentAnyParent != null && parentAnyParent.left != cur) {
-									nodeToUpdate = parentAnyParent.left;
-									f = true;
-								}
+							if (parentAnyParent != null && (isRight ? parentAnyParent.right != cur : parentAnyParent.left != cur)) {
+								nodeToUpdate = isRight ? parentAnyParent.right : parentAnyParent.left;
+								found = true;
 							}
+
 						}
 					}
 					if (nodeToUpdate != null) {
@@ -231,7 +225,6 @@ public class Day18 extends BaseTest {
 							nodeToUpdate = isRight ? nodeToUpdate.left : nodeToUpdate.right;
 						}
 					}
-
 				}
 			}
 			return added;
