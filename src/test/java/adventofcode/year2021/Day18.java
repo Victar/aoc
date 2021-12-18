@@ -92,9 +92,7 @@ public class Day18 extends BaseTest {
 		NumberSlow right;
 		Integer simpleValue;
 
-		public NumberSlow() {
-
-		}
+		public NumberSlow() {}
 
 		public NumberSlow(final String input, final NumberSlow parent) {
 			this(input);
@@ -133,16 +131,7 @@ public class Day18 extends BaseTest {
 		}
 
 		public void reduce() {
-			boolean needRecheck = false;
-			boolean exploded = true;
-			while (exploded) {
-				exploded = this.explodeFirst(this);
-				needRecheck = needRecheck || exploded;
-			}
-			final boolean splitted = this.splitFirst();
-			needRecheck = needRecheck || splitted;
-			if (needRecheck) {
-				reduce();
+			while (explodeFirst() || splitFirst()) {
 			}
 		}
 
@@ -157,18 +146,7 @@ public class Day18 extends BaseTest {
 		}
 
 		public boolean splitFirst() {
-			boolean splitted = splitOne();
-			if (this.left != null && !splitted) {
-				splitted = splitted || this.left.splitFirst();
-			}
-			if (this.right != null && !splitted) {
-				splitted = splitted || this.right.splitFirst();
-			}
-			return splitted;
-		}
-
-		public boolean splitOne() {
-			boolean result = false;
+			boolean splitted = false;
 			if (this.isSimple() && this.simpleValue >= 10) {
 				final int leftValue = this.simpleValue / 2;
 				final int rightValue = this.simpleValue - leftValue;
@@ -178,23 +156,18 @@ public class Day18 extends BaseTest {
 				this.left.simpleValue = leftValue;
 				this.right.parent = this;
 				this.right.simpleValue = rightValue;
-				result = true;
+				splitted = true;
 			}
-			return result;
+			if (this.left != null && !splitted) {
+				splitted = this.left.splitFirst();
+			}
+			if (this.right != null && !splitted) {
+				splitted = this.right.splitFirst();
+			}
+			return splitted;
 		}
 
-		public boolean explodeFirst(final NumberSlow original) {
-			boolean exploded = explodeOne(original);
-			if (this.left != null && !exploded) {
-				exploded = exploded || this.left.explodeFirst(original);
-			}
-			if (this.right != null && !exploded) {
-				exploded = exploded || this.right.explodeFirst(original);
-			}
-			return exploded;
-		}
-
-		public boolean explodeOne(final NumberSlow original) {
+		public boolean explodeFirst() {
 			boolean exploded = false;
 			if (countLevel() >= 4) {
 				if (this.left != null && this.left.isSimple() && this.right != null && this.right.isSimple()) {
@@ -208,130 +181,57 @@ public class Day18 extends BaseTest {
 					exploded = true;
 				}
 			}
+			if (this.left != null && !exploded) {
+				exploded = this.left.explodeFirst();
+			}
+			if (this.right != null && !exploded) {
+				exploded = this.right.explodeFirst();
+			}
 			return exploded;
 		}
 
-		private boolean explode() {
-			boolean needReduce = false;
-			if (countLevel() >= 4) {
-				if (this.left != null && this.left.isSimple() && this.right != null && this.right.isSimple()) {
-					final int toAddLeft = this.left.simpleValue;
-					final int toAddRight = this.right.simpleValue;
-					this.addToFirstSimpleAny(toAddLeft, false);
-					this.addToFirstSimpleAny(toAddRight, true);
-					this.left = null;
-					this.right = null;
-					this.simpleValue = 0;
-					needReduce = true;
-				}
-			}
-			if (this.left != null) {
-				needReduce = needReduce || this.left.reduceSingle();
-			}
-			if (this.right != null) {
-				needReduce = needReduce || this.right.reduceSingle();
-			}
-			return needReduce;
-		}
-
-		private ArrayList<NumberSlow> splitSingle() {
-			final ArrayList<NumberSlow> numbersToExploadNext = new ArrayList<>();
-			if (this.isSimple() && this.simpleValue >= 10) {
-				final int leftValue = this.simpleValue / 2;
-				final int rightValue = this.simpleValue - leftValue;
-				this.left = new NumberSlow();
-				this.right = new NumberSlow();
-				this.left.parent = this;
-				this.left.simpleValue = leftValue;
-				this.right.parent = this;
-				this.right.simpleValue = rightValue;
-				numbersToExploadNext.add(this);
-			} else {
-				if (this.left != null) {
-					numbersToExploadNext.addAll(this.left.splitSingle());
-				}
-				if (this.right != null) {
-					numbersToExploadNext.addAll(this.right.splitSingle());
-				}
-			}
-			return numbersToExploadNext;
-		}
-
-		private boolean reduceSingle() {
-			boolean needReduce = false;
-			needReduce = explode();
-			return needReduce;
-		}
-
 		private boolean addToFirstSimpleAny(final int toAdd, final boolean isRight) {
-			final NumberSlow parent = this.parent; //take parent ABCD
+			final NumberSlow parent = this.parent;
 			boolean added = false;
 			if (parent != null) {
-				if (isRight) {
-					final NumberSlow parentRight = parent.right; //CD
-					if (parentRight.isSimple()) {
-						parentRight.addToSimpleValue(toAdd);
-						added = true;
-					} else {
-						NumberSlow nodeToUpdate = null;
-						if (parentRight != this) { //we are not node where came from
-							nodeToUpdate = parentRight.left; //
-						} else {
-							NumberSlow p = parentRight.parent;
-							NumberSlow cur = parentRight;
-							boolean f = false;
-							while (p != null && !f) {
-								cur = p;
-								p = p.parent;
-								if (p != null && p.right != cur) {
-									nodeToUpdate = p.right;
-									f = true;
-								}
-							}
-						}
-						if (nodeToUpdate != null) {
-							while (nodeToUpdate != null && !added) {
-								if (nodeToUpdate.isSimple()) {
-									nodeToUpdate.addToSimpleValue(toAdd);
-									added = true;
-								}
-								nodeToUpdate = nodeToUpdate.left;
-							}
-						}
-
-					}
+				final NumberSlow parentAny = isRight ? parent.right : parent.left;
+				if (parentAny.isSimple()) {
+					parentAny.addToSimpleValue(toAdd);
+					added = true;
 				} else {
-					final NumberSlow parentLeft = parent.left; //CD
-					if (parentLeft.isSimple()) {
-						parentLeft.addToSimpleValue(toAdd);
-						added = true;
+					NumberSlow nodeToUpdate = null;
+					if (parentAny != this) {
+						nodeToUpdate = isRight ? parentAny.left : parentAny.right;
 					} else {
-						NumberSlow nodeToUpdate = null;
-						if (parentLeft != this) { //we are not node where came from
-							nodeToUpdate = parentLeft.right; //
-						} else {
-							NumberSlow p = parentLeft.parent;
-							NumberSlow cur = parentLeft;
-							boolean f = false;
-							while (p != null && !f) {
-								cur = p;
-								p = p.parent;
-								if (p != null && p.left != cur) {
-									nodeToUpdate = p.left;
+						NumberSlow parentAnyParent = parentAny.parent;
+						NumberSlow cur;
+						boolean f = false;
+						while (parentAnyParent != null && !f) {
+							cur = parentAnyParent;
+							parentAnyParent = parentAnyParent.parent;
+							if (isRight) {
+								if (parentAnyParent != null && parentAnyParent.right != cur) {
+									nodeToUpdate = parentAnyParent.right;
+									f = true;
+								}
+							} else {
+								if (parentAnyParent != null && parentAnyParent.left != cur) {
+									nodeToUpdate = parentAnyParent.left;
 									f = true;
 								}
 							}
 						}
-						if (nodeToUpdate != null) {
-							while (nodeToUpdate != null && !added) {
-								if (nodeToUpdate.isSimple()) {
-									nodeToUpdate.addToSimpleValue(toAdd);
-									added = true;
-								}
-								nodeToUpdate = nodeToUpdate.right;
+					}
+					if (nodeToUpdate != null) {
+						while (nodeToUpdate != null && !added) {
+							if (nodeToUpdate.isSimple()) {
+								nodeToUpdate.addToSimpleValue(toAdd);
+								added = true;
 							}
+							nodeToUpdate = isRight ? nodeToUpdate.left : nodeToUpdate.right;
 						}
 					}
+
 				}
 			}
 			return added;
@@ -355,24 +255,6 @@ public class Day18 extends BaseTest {
 
 		boolean isSimple() {
 			return this.left == null && this.right == null;
-		}
-
-		public String toStringHiglight(final NumberSlow higlight) {
-			if (this.isSimple()) {
-				if (this == higlight) {
-					return "(" + this.simpleValue + ")";
-				} else {
-					return "" + this.simpleValue;
-				}
-			} else {
-				final String leftS = (this.left == higlight) ?
-						"(" + this.left.toStringHiglight(higlight) + ")" :
-						this.left.toStringHiglight(higlight) + "";
-				final String rightS = (this.right == higlight) ?
-						"(" + this.right.toStringHiglight(higlight) + ")" :
-						this.right.toStringHiglight(higlight) + "";
-				return "[" + leftS + "," + rightS + "]";
-			}
 		}
 
 		@Override public String toString() {
