@@ -52,12 +52,10 @@ public class Day20 extends BaseTest {
 	}
 
 	public Set<Pixel> runTransform(final Set<Pixel> currentSet) {
-
 		final Set<Pixel> result = new HashSet<>();
 		for (int x = this.minX - 1; x <= this.maxX + 1; x++) {
 			for (int y = this.minY - 1; y <= this.maxY + 1; y++) {
-				final boolean isLight = isLight(currentSet, x, y);
-				if (isLight) {
+				if (isLight(currentSet, x, y)) {
 					result.add(new Pixel(x, y));
 				}
 			}
@@ -69,34 +67,12 @@ public class Day20 extends BaseTest {
 		return result;
 	}
 
-	public void printImage(final Set<Pixel> imageSet) {
-		for (int y = this.minY - 3; y <= this.maxY + 3; y++) {
-			for (int x = this.minX - 3; x <= this.maxX + 3; x++) {
-				final Pixel current = getPixel(imageSet, x, y);
-				if (current == null) {
-					System.out.print(" ");
-				} else {
-					System.out.print("#");
-				}
-			}
-			System.out.println("   <-y" + y);
-		}
-	}
-
-	public Pixel getPixel(final Set<Pixel> imageSet, final int finalX, final int finalY) {
-		final Pixel toCheck = new Pixel(finalX, finalY);
-		if (imageSet.contains(new Pixel(finalX, finalY))) {
-			return toCheck;
-		}
-		return null;
-	}
-
 	public boolean isLight(final Set<Pixel> imageSet, final int currentX, final int currentY) {
 		final StringBuilder sb = new StringBuilder();
 		for (int y = currentY - 1; y <= currentY + 1; y++) {
 			for (int x = currentX - 1; x <= currentX + 1; x++) {
 				String cur = "0";
-				if (getPixel(imageSet, x, y) != null) {
+				if (imageSet.contains(new Pixel(x, y))) {
 					cur = "1";
 				} else {
 					if (this.outsideLight && (x > this.maxX || x < this.minX || y > this.maxX || y < this.minY)) {
@@ -107,6 +83,15 @@ public class Day20 extends BaseTest {
 			}
 		}
 		return "#".equals("" + this.algString.charAt(Integer.parseInt(sb.toString(), 2)));
+	}
+
+	public void printImage(final Set<Pixel> imageSet) {
+		for (int y = this.minY - 3; y <= this.maxY + 3; y++) {
+			for (int x = this.minX - 3; x <= this.maxX + 3; x++) {
+				System.out.print(imageSet.contains(new Pixel(x, y)) ? "#" : " ");
+			}
+			System.out.println("   <-y" + y);
+		}
 	}
 
 	class Pixel {
