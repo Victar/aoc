@@ -55,10 +55,11 @@ public class Day23 extends BaseTest {
 
 	@Test public void runSilver() throws Exception {
 		final GameState gsinput = new GameState(new String[] { C, D }, new String[] { A, B }, new String[] { D, C }, new String[] { B, A });
+//		final GameState gsinput = new GameState(new String[] { A, B }, new String[] { D, C }, new String[] { C, B }, new String[] { A, D });
 		final Map<String, GameState> DP = new HashMap<>();
 		findSolution(gsinput, DP);
 		System.out.println(this.minPrice);
-		System.out.println(DP.size());
+		System.out.println("DP size: " + DP.size());
 		if (this.minState != null) {
 			this.minState.printWithParent();
 		}

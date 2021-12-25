@@ -86,26 +86,20 @@ public class Day21 extends BaseTest {
 	@Data static class GameState {
 
 		public static final int WIN_COUNT = 21;
-
 		long win1;
 		long win2;
-
 		public GameState(final long win1, final long win2) {
 			this.win1 = win1;
 			this.win2 = win2;
 		}
 
 		public void mergeState(final GameState other) {
-			this.win1 = this.win1 + other.getWin2();
-			this.win2 = this.win2 + other.getWin1();
+			this.win1 = this.win1 + other.win2;
+			this.win2 = this.win2 + other.win1;
 		}
 
 		long getMax() {
 			return Math.max(this.win1, this.win2);
-		}
-
-		@Override public String toString() {
-			return "(" + this.win1 + ", " + this.win2 + ')';
 		}
 	}
 }
