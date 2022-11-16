@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class BaseTest {
 
 	protected static String getFullFilePath(final String relativePath) {
-		return relativePath.startsWith("/") ? relativePath : "/Users/viktar/projects/aoc-all/src/test/resources/" + relativePath;
+		return relativePath.startsWith("/") ? relativePath : "/Users/vkad2506/AdventOfCode/src/test/resources/" + relativePath;
 	}
 
 	//Util function that might be usefull for each day
