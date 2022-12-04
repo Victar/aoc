@@ -17,8 +17,8 @@ func runSilver() {
 		panic(err)
 	}
 	var score = 0
+	r := regexp.MustCompile("[^,-]+")
 	for _, line := range lines {
-		r := regexp.MustCompile("[^,-]+")
 		strarr := r.FindAllString(line, -1)
 		var s1b, _ = strconv.Atoi(strarr[0])
 		var s1e, _ = strconv.Atoi(strarr[1])
@@ -39,8 +39,8 @@ func runGold() {
 		panic(err)
 	}
 	var score = 0
+	r := regexp.MustCompile("[^,-]+")
 	for _, line := range lines {
-		r := regexp.MustCompile("[^,-]+")
 		strarr := r.FindAllString(line, -1)
 		var s1b, _ = strconv.Atoi(strarr[0])
 		var s1e, _ = strconv.Atoi(strarr[1])
