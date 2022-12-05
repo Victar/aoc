@@ -9,6 +9,12 @@ import java.util.List;
 
 public class Day5 extends BaseTest {
 
+	public static final int DAY = 5;
+
+	@Test public void runDownloadInput() throws Exception {
+		downloadInput(DAY);
+	}
+
 	@Test public void runSilver() throws Exception {
 		solve(true);
 	}
@@ -18,7 +24,7 @@ public class Day5 extends BaseTest {
 	}
 
 	public void solve(boolean reverse) throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day5/input.txt");
+		final ArrayList<String> data = readStringFromFile(DAY);
 		int size = data.get(0).length() / 4 + 1;
 		List<List> all = new ArrayList<>();
 		for (int i = 0; i < size; i++) {

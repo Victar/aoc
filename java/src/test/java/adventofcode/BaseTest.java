@@ -1,24 +1,39 @@
 package adventofcode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class BaseTest {
+
+	protected static void downloadInput(int day) throws IOException {
+		final URL url = new URL("https://adventofcode.com/2022/day/" + day + "/input");
+		final URLConnection uc = url.openConnection();
+		//session=53XXXXXXXXXXXXXXXXXXXX1b //valid session, first line of cookie.txt file
+		ArrayList<String> session = readStringFromFile("cookie.txt");
+		uc.setRequestProperty("cookie", session.get(0));
+		ReadableByteChannel readChannel = Channels.newChannel(uc.getInputStream());
+		FileOutputStream fileOS = new FileOutputStream(getFullFilePath("year2022/day" + day + "/input.txt"));
+		FileChannel writeChannel = fileOS.getChannel();
+		writeChannel.transferFrom(readChannel, 0, Long.MAX_VALUE);
+	}
 
 	protected static String getFullFilePath(final String relativePath) {
 		return relativePath.startsWith("/") ? relativePath : "/Users/vkad2506/AdventOfCode/java/src/test/resources/" + relativePath;
 	}
 
 	//Util function that might be usefull for each day
+	protected static ArrayList<String> readStringFromFile(final int day) throws FileNotFoundException {
+		return readStringFromFile("year2022/day" + day + "/input.txt");
+	}
+
 	protected static ArrayList<String> readStringFromFile(final String fileName) throws FileNotFoundException {
 		final ArrayList<String> result = new ArrayList<>();
 		try (final Scanner s = new Scanner(new FileReader(getFullFilePath(fileName)))) {
