@@ -33,10 +33,10 @@ func newMonkey(sName, sStart, sOperation, sTest, sTestTrue, sTestFalse string) *
 	id, _ := strconv.Atoi(sName[7:8])
 	operation := sOperation[18:]
 	testNumber, _ := strconv.Atoi(sTest[21:])
-	testTrueMonleyId, _ := strconv.Atoi(sTestTrue[29:])
+	testTrueMonkeyId, _ := strconv.Atoi(sTestTrue[29:])
 	testFalseMonkeyId, _ := strconv.Atoi(sTestFalse[30:])
 	startSlice := strings.Split(sStart[18:], ", ")
-	currentItems := []int{}
+	var currentItems []int
 	for _, s := range startSlice {
 		sInt, _ := strconv.Atoi(s)
 		currentItems = append(currentItems, sInt)
@@ -46,7 +46,7 @@ func newMonkey(sName, sStart, sOperation, sTest, sTestTrue, sTestFalse string) *
 		operation:         operation,
 		testNumber:        testNumber,
 		testFalseMonkeyId: testFalseMonkeyId,
-		testTrueMonkeyId:  testTrueMonleyId,
+		testTrueMonkeyId:  testTrueMonkeyId,
 		currentItems:      currentItems,
 	}
 }
