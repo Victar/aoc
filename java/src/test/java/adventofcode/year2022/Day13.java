@@ -58,7 +58,7 @@ public class Day13 extends BaseTest {
 		System.out.println(index2 * index6);
 	}
 
-	@Data class Signal implements Comparable {
+	@Data static class Signal implements Comparable {
 
 		final ArrayList json;
 		final String id;
