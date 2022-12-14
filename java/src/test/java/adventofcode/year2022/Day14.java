@@ -5,6 +5,12 @@ import lombok.Data;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.*;
 
 public class Day14 extends BaseTest {
@@ -60,7 +66,7 @@ public class Day14 extends BaseTest {
 		}
 
 		System.out.println((listPoint.size() - before));
-		drawPoints(listPoint);
+		drawPoints(listPoint, isGold);
 	}
 
 	public Point addPoint(List<Point> listPoint, Set<String> setPointHashes, Point current) {
@@ -81,7 +87,7 @@ public class Day14 extends BaseTest {
 		return null;
 	}
 
-	public void drawPoints(List<Point> listPoint) {
+	public void drawPoints(List<Point> listPoint, boolean isGold) {
 		Map<String, Point> map = new HashMap<>();
 		int startX = Integer.MAX_VALUE;
 		int startY = Integer.MAX_VALUE;
@@ -98,6 +104,18 @@ public class Day14 extends BaseTest {
 				endY = Math.max(endY, point.getY() + 2);
 			}
 		}
+
+		int imageX = endX - startX + 4;
+		int imageY = endY - startY + 4;
+
+		BufferedImage image = new BufferedImage(imageX, imageY, BufferedImage.TYPE_4BYTE_ABGR);
+		Color empty = new Color(255, 255, 255);
+		Color wall = new Color(63, 54, 54);
+		Color ball = new Color(255, 166, 12);
+		Graphics2D g2d = image.createGraphics();
+		g2d.setColor(empty);
+		g2d.fillRect(0, 0, imageX, imageY);
+
 		System.out.println("=Draw= (" + startX + "->" + endX + ")  (" + startY + "->" + endY + ")");
 		for (int y = startY; y < endY; y++) {
 			StringBuilder sb = new StringBuilder();
@@ -106,12 +124,22 @@ public class Day14 extends BaseTest {
 				Point p = map.get(x + "," + y);
 				if (p != null) {
 					cur = p.isWall ? "#" : "0";
+					g2d.setColor(p.isWall ? wall : ball);
+					g2d.fillRect(x - startX + 2, y - startY + 2, 1, 1);
 				}
 				sb.append(cur);
 			}
 			System.out.println(sb);
 		}
 		System.out.println("=End=\n\n");
+		String filename = isGold ? "gold" : "silver";
+		String path = BaseTest.getFullFilePath("year2022/day" + DAY + "/" + filename + ".png");
+		File outputfile = new File(path);
+		try {
+			ImageIO.write(image, "png", outputfile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Data static class Point {

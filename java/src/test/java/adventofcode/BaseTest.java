@@ -25,7 +25,7 @@ public class BaseTest {
 		writeChannel.transferFrom(readChannel, 0, Long.MAX_VALUE);
 	}
 
-	protected static String getFullFilePath(final String relativePath) {
+	public static String getFullFilePath(final String relativePath) {
 		return relativePath.startsWith("/") ? relativePath : "/Users/vkad2506/AdventOfCode/java/src/test/resources/" + relativePath;
 	}
 
