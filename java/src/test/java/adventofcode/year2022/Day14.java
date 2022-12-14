@@ -60,7 +60,7 @@ public class Day14 extends BaseTest {
 		}
 
 		System.out.println((listPoint.size() - before));
-		drawPoints(listPoint, 480, 520, 0, 15);
+		drawPoints(listPoint);
 	}
 
 	public Point addPoint(List<Point> listPoint, Set<String> setPointHashes, Point current) {
@@ -81,14 +81,24 @@ public class Day14 extends BaseTest {
 		return null;
 	}
 
-	public void drawPoints(List<Point> listPoint, int startX, int endX, int startY, int endY) {
-		System.out.println("=Draw= (" + startX + "->" + endX + ")  (" + startY + "->" + endY + ")");
+	public void drawPoints(List<Point> listPoint) {
 		Map<String, Point> map = new HashMap<>();
+		int startX = Integer.MAX_VALUE;
+		int startY = Integer.MAX_VALUE;
+		int endX = Integer.MIN_VALUE;
+		int endY = Integer.MIN_VALUE;
 		for (Point point : listPoint) {
 			if (!map.containsKey(point.getHash())) {
 				map.put(point.getHash(), point);
 			}
+			if (!point.isWall()) {
+				startX = Math.min(startX, point.getX() - 2);
+				endX = Math.max(endX, point.getX() + 2);
+				startY = Math.min(startY, point.getY() - 2);
+				endY = Math.max(endY, point.getY() + 2);
+			}
 		}
+		System.out.println("=Draw= (" + startX + "->" + endX + ")  (" + startY + "->" + endY + ")");
 		for (int y = startY; y < endY; y++) {
 			StringBuilder sb = new StringBuilder();
 			for (int x = startX; x < endX; x++) {
