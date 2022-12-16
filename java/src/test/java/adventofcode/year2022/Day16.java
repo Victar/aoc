@@ -10,10 +10,10 @@ import java.util.*;
 public class Day16 extends BaseTest {
 
 	public static final int DAY = 16;
-	public static int skipGold = 0;
-	static int MAX_KNOWN = 0;
 	static Map<String, Valve> mapValve = new HashMap<>();
+	static ArrayList<Integer> listValvePresure = new ArrayList<>();
 	static int totalPresure = 0;
+
 	static long DP_hit = 0;
 	Set<String> DP_SET = new HashSet<>();
 	Map<String, Integer> DP_MAP = new HashMap<>();
@@ -30,33 +30,20 @@ public class Day16 extends BaseTest {
 		runAny(false);
 		currentMaxState.populateBoarder(borders);
 		DP_SET.clear();
-		currentMax = Integer.MIN_VALUE;
+		currentMax =  currentMaxState.getTotalReleasedPressure(); // might need run several time with value from previous run e.g. 2910
 		currentMaxState = null;
 		DP_hit = 0;
 		DP_MAP.clear();
-		MAX_KNOWN = 2905;
 		totalPresure = 0;
 		runAny(true);
-		System.out.println("#####");
-		//		2371 - skip Gold 10
-		//		2318 - skip Gold 12
-		//      2787 - skip Gold 8 270 000 000
-		//      2787 - skip Gold 6 350 000 000
-		//      2865 - skip Gold 5 xxx 000 000
-		//      2905 - skip Gold 4 xxx 000 000
-		//      2905 - skip Gold 3  80 000 000
-		//      2905 - skip Gold 2  80 000 000
-		// 2911
-
-		System.out.println(skipGold * currentMaxState.releasingPressure + currentMaxState.totalReleasedPressure);
-
 	}
 
 	public void runAny(boolean isGold) throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/sample.txt");
+		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
 		for (final String input : data) {
 			Valve.initValve(mapValve, input);
 		}
+		Collections.sort(listValvePresure, Collections.reverseOrder());
 		State start = new State(1, mapValve.get("AA"), mapValve.get("AA"), 0, 0, new HashSet<>(), null);
 		startGame(start, isGold);
 		System.out.println(currentMax);
@@ -72,14 +59,24 @@ public class Day16 extends BaseTest {
 		return borderLimit == null || borderLimit <= current.totalReleasedPressure;
 	}
 
-	public boolean bestCheckPass(State current) {
+	public int maxReleaseUntilEnd(State current, int endMinute) {
+		int releasingPressure = current.getReleasingPressure();
+		int minutesToWork = endMinute - current.getMinute();
+		int maxProduce = current.getTotalReleasedPressure();
+		for (int i = 0; i <= minutesToWork; i++) {
+			releasingPressure = Math.min(releasingPressure + listValvePresure.get(Math.min(i, listValvePresure.size() - 1)), totalPresure);
+			maxProduce += releasingPressure;
+		}
+		return maxProduce;
+
+	}
+
+	public boolean bestCheckPass(State current, boolean isGold) {
 		String idForBestCheck = current.getIdForBestCheck();
 		int currentValue = current.getTotalReleasedPressure();
 
-		if (currentValue + totalPresure * (26 - current.minute) < MAX_KNOWN) {
-			if (DP_hit % 100000 == 0) {
-				System.out.println("bestCheckPass not passed for : " + current);
-			}
+		if (maxReleaseUntilEnd(current, (isGold ? 26 : 30)) < currentMax) {
+
 			return false;
 		}
 		if (DP_MAP.containsKey(idForBestCheck)) {
@@ -97,21 +94,28 @@ public class Day16 extends BaseTest {
 	}
 
 	public void startGame(State current, boolean isGold) {
-		if (current.getMinute() >= (isGold ? 26 - skipGold : 30)) {
+		if (current.getMinute() >= (isGold ? 26 : 30)) {
 			if (current.getTotalReleasedPressure() > currentMax) {
 				currentMax = Math.max(currentMax, current.getTotalReleasedPressure());
 				currentMaxState = current;
-				//				System.out.println("NEW max");
-				//				System.out.println(currentMax);
-				//				currentMaxState.print();
+				System.out.println("New max: " + currentMax + "  " + currentMaxState);
+//				borders.clear();
+//				currentMaxState.populateBoarder(borders);
+
 			}
 			return;
 		}
 		if (!borderCheckPass(current)) {
+			//			if (DP_hit % 100000 == 0) {
+			//				System.out.println("borderCheckPass not passed for : " + current);
+			//			}
 			return;
 		}
 
-		if (!(bestCheckPass(current))) {
+		if (!bestCheckPass(current, isGold)) {
+			//			if (DP_hit % 100000 == 0) {
+			//				System.out.println("bestCheckPass not passed for : " + current);
+			//			}
 			return;
 		}
 
@@ -121,9 +125,6 @@ public class Day16 extends BaseTest {
 			String id = state.getId();
 			if (DP_SET.contains(id)) {
 				DP_hit++;
-				if (DP_hit % 10000000 == 0) {
-					System.out.println(DP_hit);
-				}
 			} else {
 				DP_SET.add(id);
 				startGame(state, isGold);
@@ -216,20 +217,14 @@ public class Day16 extends BaseTest {
 					stateList.add(newState);
 				}
 			}
-
-			//			if (DP_hit % 1000000 == 0) {
-			//				System.out.println("new List size: " + newList.size() + " stateList: " + stateList.size() + " " + this.getId());
-			//			}
 			return stateList;
 		}
 
-		//
 		public String getIdForBestCheck() {
 			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";" + this.releasingPressure;
 		}
 
 		public String getId() {
-
 			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";" + this.releasingPressure
 					+ ";" + this.totalReleasedPressure + ";"; //Gold
 		}
@@ -273,6 +268,7 @@ public class Day16 extends BaseTest {
 			current.name = name;
 			String[] spl = currentString.split("; tunnel");
 			current.rate = Integer.parseInt(spl[0].substring(23));
+			listValvePresure.add(current.rate);
 			totalPresure += current.rate;
 			String[] ps = spl[1].substring(multiple ? 17 : 16).split(", ");
 			current.paths = Arrays.asList(ps);
