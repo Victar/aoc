@@ -11,62 +11,87 @@ public class Day16 extends BaseTest {
 
 	public static final int DAY = 16;
 	static Map<String, Valve> mapValve = new HashMap<>();
-//	Map<String, State> DP = new HashMap<>();
-	Set<String> DP_SET = new HashSet<>();
 	static int totalPresure = 0;
-
-	int currentMax;
+	//	Map<String, State> DP = new HashMap<>();
+	Set<String> DP_SET = new HashSet<>();
+	int currentMax = Integer.MIN_VALUE;
 	State currentMaxState;
 
+	Map<Integer, Integer> borders = new HashMap<>();
 	long DP_hit = 0;
 
 	@Ignore @Test public void runDownloadInput() throws Exception {
 		downloadInput(DAY);
 	}
 
+	@Test public void runBoth() throws Exception {
+		runAny(false);
+		currentMaxState.populateBoarder(borders);
+		DP_SET.clear();
+		currentMax = Integer.MIN_VALUE;
+		currentMaxState = null;
+		runAny(true);
+
+	}
+
 	@Test public void runSilver() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/sample.txt");
+		runAny(false);
+	}
+
+	@Test public void runGold() throws Exception {
+		runAny(true);
+	}
+
+	public void runAny(boolean isGold) throws Exception {
+		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
 		for (final String input : data) {
-			//			System.out.println(input);
 			Valve.initValve(mapValve, input);
 		}
-		State start = new State(1, mapValve.get("AA"), 0, 0, new HashSet<>(), null);
-		startGame(start);
+		State start = new State(1, mapValve.get("AA"), mapValve.get("AA"), 0, 0, new HashSet<>(), null);
+		//		start.getNewState(true).get(3).getNewState(false).get(2).getNewState(true).get(3).getNewState(false);
+		startGame(start, isGold);
 		System.out.println(currentMax);
 		currentMaxState.print();
 
 	}
 
-	@Test public void runGold() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
-		for (final String input : data) {
-			System.out.println(input);
+	public boolean borderCheckPass(State current){
+		if (borders.isEmpty()){
+			return true;
 		}
+		Integer  borderLimit  = borders.get(current.minute);
+		if (borderLimit!=null && borderLimit>current.totalReleasedPressure){
+			return false;
+		}
+		return true;
 	}
-
-	public void startGame(State current) {
-		//		System.out.println(current + " " + DP_hit );
-		if (current.getMinute() >= 30) {
-			if (current.getTotalReleasedPressure()> currentMax){
+	public void startGame(State current, boolean isGold) {
+		if (current.getMinute() >= (isGold ? 26 : 30)) {
+			if (current.getTotalReleasedPressure() > currentMax) {
 				currentMax = Math.max(currentMax, current.getTotalReleasedPressure());
 				currentMaxState = current;
+				System.out.println("NEW max");
+				System.out.println(currentMax);
+				//				currentMaxState.print();
 			}
 			return;
 		}
-		//Open valves
-//		List<State> newStatesList = current.getNewStateGold();
-		List<State> newStatesList = current.getNewState();
+		if (!borderCheckPass(current)){
+			return;
+		}
+
+		List<State> newStatesList = isGold ? current.getNewStateGold() : current.getNewState(true);
 
 		for (State state : newStatesList) {
 			String id = state.getId();
 			if (DP_SET.contains(id)) {
 				DP_hit++;
-				if (DP_hit % 1000000 ==0){
+				if (DP_hit % 10000000 == 0) {
 					System.out.println(DP_hit);
 				}
 			} else {
 				DP_SET.add(id);
-				startGame(state);
+				startGame(state, isGold);
 			}
 		}
 	}
@@ -80,120 +105,130 @@ public class Day16 extends BaseTest {
 		int releasingPressure;
 		int totalReleasedPressure;
 		Set<String> openedValveIds;
-		List<String> openedValveIdsList;
 
 		State parent = null;
 
-		public State(int minute, Valve currentValve, int releasingPressure, int totalReleasedPressure, Set<String> openedValveIds, State parent) {
+		public State(int minute, Valve currentValve, Valve currentValveElefant, int releasingPressure, int totalReleasedPressure,
+		             Set<String> openedValveIds, State parent) {
 			this.minute = minute;
 			this.currentValve = currentValve;
-			this.releasingPressure = releasingPressure;
-			this.totalReleasedPressure = totalReleasedPressure;
-			this.openedValveIds = openedValveIds;
-			this.parent = parent;
-			openedValveIdsList = new ArrayList<>(openedValveIds);
-			Collections.sort(openedValveIdsList);
-
-		}
-
-		public State(int minute, Valve currentValve,  Valve currentValveElefant, int releasingPressure, int totalReleasedPressure, Set<String> openedValveIds, State parent) {
-			this.minute = minute;
-			this.currentValve = currentValve;
-			this.releasingPressure = releasingPressure;
-			this.totalReleasedPressure = totalReleasedPressure;
-			this.openedValveIds = openedValveIds;
 			this.currentValveElefant = currentValveElefant;
+			this.releasingPressure = releasingPressure;
+			this.totalReleasedPressure = totalReleasedPressure;
+			this.openedValveIds = openedValveIds;
 			this.parent = parent;
-			openedValveIdsList = new ArrayList<>(openedValveIds);
-			Collections.sort(openedValveIdsList);
 
 		}
 
 		public List<State> getNewStateGold() {
 			List<State> stateList = new ArrayList<>();
-			Set<String> newList = new HashSet<>(openedValveIds);
-			State newState =
-					new State(this.minute + 1, this.currentValve, this.currentValveElefant, releasingPressure, totalReleasedPressure + releasingPressure, newList, this);
-			stateList.add(newState);
-			if (totalPresure == releasingPressure){
-				return stateList;
-			}
-			if (!this.openedValveIds.contains(currentValve.getName())) {
-				newList = new HashSet<>(openedValveIds);
-				newList.add(currentValve.name);
-				newState = new State(this.minute + 1, this.currentValve, releasingPressure + currentValve.getRate(),
-						totalReleasedPressure + releasingPressure + currentValve.getRate(), newList, this);
-				stateList.add(newState);
-			}
-			for (String newPath : currentValve.paths) {
-				newList = new HashSet<>(openedValveIds);
-				Valve newValve = mapValve.get(newPath);
-				if (newValve != null) {
-					newState =
-							new State(this.minute + 1, newValve, releasingPressure, totalReleasedPressure + releasingPressure, newList, this);
-					stateList.add(newState);
-				} else {
-					System.out.println(newValve);
-				}
-			}
 
+			List<State> statesFirstPlayer = getNewState(true);
+			for (State stateFirstPlayer : statesFirstPlayer) {
+				stateList.addAll(stateFirstPlayer.getNewState(false));
+			}
 			return stateList;
 		}
 
-		public List<State> getNewState() {
+		public List<State> getNewState(boolean firstPlayer) {
+			int newMinute = firstPlayer ? this.minute + 1 : this.minute;
+			Valve currentActor = firstPlayer ? this.currentValve : this.currentValveElefant;
+			Valve secondValve = firstPlayer ? this.currentValveElefant : this.currentValve;
+			State parent = firstPlayer ? this : this.parent;
+			int newReleasingPressure = firstPlayer ? this.releasingPressure : 0;
+
 			List<State> stateList = new ArrayList<>();
+//
+//			if (newMinute > 13 && totalReleasedPressure < 300) {
+//				return stateList;
+//			}
+//
+//			if (newMinute > 10 && totalReleasedPressure < 159) {
+//				return stateList;
+//			}
+//
+//			if (newMinute > 7 && totalReleasedPressure < 49) {
+//				return stateList;
+//			}
+
 			Set<String> newList = new HashSet<>(openedValveIds);
-			State newState =
-					new State(this.minute + 1, this.currentValve, releasingPressure, totalReleasedPressure + releasingPressure, newList, this);
-			stateList.add(newState);
-			if (totalPresure == releasingPressure){
+			State newState;
+			if (firstPlayer) {
+				newState = new State(newMinute, currentActor, secondValve, releasingPressure, totalReleasedPressure + newReleasingPressure,
+						newList, parent);
+				stateList.add(newState);
+
+			} else {
+				newState = new State(newMinute, secondValve, currentActor, releasingPressure, totalReleasedPressure + newReleasingPressure,
+						newList, parent);
+				stateList.add(newState);
+
+			}
+			if (totalPresure == releasingPressure) {
 				return stateList;
 			}
-			if (!this.openedValveIds.contains(currentValve.getName())) {
+			if (!this.openedValveIds.contains(currentActor.getName())) {
 				newList = new HashSet<>(openedValveIds);
-				newList.add(currentValve.name);
-				newState = new State(this.minute + 1, this.currentValve, releasingPressure + currentValve.getRate(),
-						totalReleasedPressure + releasingPressure + currentValve.getRate(), newList, this);
-				stateList.add(newState);
-			}
-				for (String newPath : currentValve.paths) {
-					newList = new HashSet<>(openedValveIds);
-					Valve newValve = mapValve.get(newPath);
-					if (newValve != null) {
-						newState =
-								new State(this.minute + 1, newValve, releasingPressure, totalReleasedPressure + releasingPressure, newList, this);
-						stateList.add(newState);
-					} else {
-						System.out.println(newValve);
-					}
+				newList.add(currentActor.name);
+				if (firstPlayer) {
+					newState = new State(newMinute, currentActor, secondValve, releasingPressure + currentActor.getRate(),
+							totalReleasedPressure + newReleasingPressure + currentActor.getRate(), newList, parent);
+					stateList.add(newState);
+
+				} else {
+					newState = new State(newMinute, secondValve, currentActor, releasingPressure + currentActor.getRate(),
+							totalReleasedPressure + newReleasingPressure + currentActor.getRate(), newList, parent);
+					stateList.add(newState);
 				}
+			}
+			for (String newPath : currentActor.paths) {
+				newList = new HashSet<>(openedValveIds);
+				Valve newValve = mapValve.get(newPath);
+				if (firstPlayer) {
+					newState = new State(newMinute, newValve, secondValve, releasingPressure, totalReleasedPressure + newReleasingPressure,
+							newList, parent);
+					stateList.add(newState);
+				} else {
+					newState = new State(newMinute, secondValve, newValve, releasingPressure, totalReleasedPressure + newReleasingPressure,
+							newList, parent);
+					stateList.add(newState);
+				}
+			}
 
 			return stateList;
 		}
 
 		public String getId() {
 
-
-			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"; //Silver
-//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";"+ this.releasingPressure + ";" + this.totalReleasedPressure + ";"; //Silver
-
-//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"
-//					+ String.join(",",  openedValveIds);
+			//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"; //Silver
+			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";" + this.releasingPressure
+					+ ";" + this.totalReleasedPressure + ";"; //Gold
+			//
+			//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"
+			//					+ String.join(",",  openedValveIds);
 		}
 
-
-
-		public void print(){
+		public void print() {
 
 			System.out.println(this.getId());
-			System.out.println("== Minute "+this.minute +" ==");
-			System.out.println("Valve  "+this.openedValveIds +" open, releasing " + this.releasingPressure+" pressure.");
-			System.out.println("Current: "+this.currentValve.name);
+			System.out.println("== Minute " + this.minute + " ==");
+			System.out.println("Valve  " + this.openedValveIds + " open, releasing " + this.releasingPressure + " pressure. total: "
+					+ this.totalReleasedPressure + ".");
+			System.out.println("Current: " + this.currentValve.name + "  Current Elefant: " + this.currentValveElefant.name);
 			System.out.println();
 
-
-			if (this.parent!=null){
+			if (this.parent != null) {
 				parent.print();
+			}
+		}
+
+		public void populateBoarder(Map<Integer, Integer> borders){
+			if (!borders.containsKey(this.minute)){
+				System.out.println("Added: " + minute + "  " + this.totalReleasedPressure);
+				borders.put(minute,totalReleasedPressure);
+			}
+			if (this.parent!=null){
+				this.parent.populateBoarder(borders);
 			}
 		}
 	}
@@ -212,12 +247,10 @@ public class Day16 extends BaseTest {
 			current.name = name;
 			String[] spl = currentString.split("; tunnel");
 			current.rate = Integer.parseInt(spl[0].substring(23));
-			totalPresure +=current.rate;
+			totalPresure += current.rate;
 			String[] ps = spl[1].substring(multiple ? 17 : 16).split(", ");
 			current.paths = Arrays.asList(ps);
 			mapValve.put(name, current);
-			//			System.out.println(current);
-			//
 		}
 	}
 

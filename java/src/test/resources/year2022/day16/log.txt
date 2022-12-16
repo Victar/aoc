@@ -1,0 +1,154 @@
+/Library/Java/JavaVirtualMachines/jdk-17.0.5.jdk/Contents/Home/bin/java -ea -Didea.test.cyclic.buffer.size=1048576 -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=58763:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar:/Applications/IntelliJ IDEA.app/Contents/plugins/junit/lib/junit5-rt.jar:/Applications/IntelliJ IDEA.app/Contents/plugins/junit/lib/junit-rt.jar:/Users/vkad2506/AdventOfCode/java/target/test-classes:/Users/vkad2506/AdventOfCode/java/target/classes:/Users/vkad2506/.m2/repository/junit/junit/4.11/junit-4.11.jar:/Users/vkad2506/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/Users/vkad2506/.m2/repository/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar:/Users/vkad2506/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar:/Users/vkad2506/.m2/repository/org/apache/commons/commons-lang3/3.6/commons-lang3-3.6.jar com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit4 adventofcode.year2022.Day16,runSilver
+2183
+m:30;CQ;AA;139;2183;
+== Minute 30 ==
+Valve  [BT, UN, WQ, IE, IF, GU, CQ, RQ] open, releasing 139 pressure. total: 2183.
+Current: CQ  Current Elefant: AA
+
+m:29;CQ;AA;139;2044;
+== Minute 29 ==
+Valve  [BT, UN, WQ, IE, IF, GU, CQ, RQ] open, releasing 139 pressure. total: 2044.
+Current: CQ  Current Elefant: AA
+
+m:28;CQ;AA;139;1905;
+== Minute 28 ==
+Valve  [BT, UN, WQ, IE, IF, GU, CQ, RQ] open, releasing 139 pressure. total: 1905.
+Current: CQ  Current Elefant: AA
+
+m:27;CQ;AA;130;1766;
+== Minute 27 ==
+Valve  [BT, UN, WQ, IE, IF, GU, RQ] open, releasing 130 pressure. total: 1766.
+Current: CQ  Current Elefant: AA
+
+m:26;DR;AA;130;1636;
+== Minute 26 ==
+Valve  [BT, UN, WQ, IE, IF, GU, RQ] open, releasing 130 pressure. total: 1636.
+Current: DR  Current Elefant: AA
+
+m:25;GA;AA;130;1506;
+== Minute 25 ==
+Valve  [BT, UN, WQ, IE, IF, GU, RQ] open, releasing 130 pressure. total: 1506.
+Current: GA  Current Elefant: AA
+
+m:24;BT;AA;130;1376;
+== Minute 24 ==
+Valve  [BT, UN, WQ, IE, IF, GU, RQ] open, releasing 130 pressure. total: 1376.
+Current: BT  Current Elefant: AA
+
+m:23;BT;AA;106;1246;
+== Minute 23 ==
+Valve  [UN, WQ, IE, IF, GU, RQ] open, releasing 106 pressure. total: 1246.
+Current: BT  Current Elefant: AA
+
+m:22;BL;AA;106;1140;
+== Minute 22 ==
+Valve  [UN, WQ, IE, IF, GU, RQ] open, releasing 106 pressure. total: 1140.
+Current: BL  Current Elefant: AA
+
+m:21;RQ;AA;106;1034;
+== Minute 21 ==
+Valve  [UN, WQ, IE, IF, GU, RQ] open, releasing 106 pressure. total: 1034.
+Current: RQ  Current Elefant: AA
+
+m:20;RQ;AA;93;928;
+== Minute 20 ==
+Valve  [UN, WQ, IE, IF, GU] open, releasing 93 pressure. total: 928.
+Current: RQ  Current Elefant: AA
+
+m:19;DJ;AA;93;835;
+== Minute 19 ==
+Valve  [UN, WQ, IE, IF, GU] open, releasing 93 pressure. total: 835.
+Current: DJ  Current Elefant: AA
+
+m:18;NT;AA;93;742;
+== Minute 18 ==
+Valve  [UN, WQ, IE, IF, GU] open, releasing 93 pressure. total: 742.
+Current: NT  Current Elefant: AA
+
+m:17;UN;AA;93;649;
+== Minute 17 ==
+Valve  [UN, WQ, IE, IF, GU] open, releasing 93 pressure. total: 649.
+Current: UN  Current Elefant: AA
+
+m:16;UN;AA;73;556;
+== Minute 16 ==
+Valve  [WQ, IE, IF, GU] open, releasing 73 pressure. total: 556.
+Current: UN  Current Elefant: AA
+
+m:15;RF;AA;73;483;
+== Minute 15 ==
+Valve  [WQ, IE, IF, GU] open, releasing 73 pressure. total: 483.
+Current: RF  Current Elefant: AA
+
+m:14;BA;AA;73;410;
+== Minute 14 ==
+Valve  [WQ, IE, IF, GU] open, releasing 73 pressure. total: 410.
+Current: BA  Current Elefant: AA
+
+m:13;GU;AA;73;337;
+== Minute 13 ==
+Valve  [WQ, IE, IF, GU] open, releasing 73 pressure. total: 337.
+Current: GU  Current Elefant: AA
+
+m:12;GU;AA;52;264;
+== Minute 12 ==
+Valve  [WQ, IE, IF] open, releasing 52 pressure. total: 264.
+Current: GU  Current Elefant: AA
+
+m:11;VJ;AA;52;212;
+== Minute 11 ==
+Valve  [WQ, IE, IF] open, releasing 52 pressure. total: 212.
+Current: VJ  Current Elefant: AA
+
+m:10;WQ;AA;52;160;
+== Minute 10 ==
+Valve  [WQ, IE, IF] open, releasing 52 pressure. total: 160.
+Current: WQ  Current Elefant: AA
+
+m:9;WQ;AA;29;108;
+== Minute 9 ==
+Valve  [IE, IF] open, releasing 29 pressure. total: 108.
+Current: WQ  Current Elefant: AA
+
+m:8;UM;AA;29;79;
+== Minute 8 ==
+Valve  [IE, IF] open, releasing 29 pressure. total: 79.
+Current: UM  Current Elefant: AA
+
+m:7;IE;AA;29;50;
+== Minute 7 ==
+Valve  [IE, IF] open, releasing 29 pressure. total: 50.
+Current: IE  Current Elefant: AA
+
+m:6;IE;AA;7;21;
+== Minute 6 ==
+Valve  [IF] open, releasing 7 pressure. total: 21.
+Current: IE  Current Elefant: AA
+
+m:5;XI;AA;7;14;
+== Minute 5 ==
+Valve  [IF] open, releasing 7 pressure. total: 14.
+Current: XI  Current Elefant: AA
+
+m:4;IF;AA;7;7;
+== Minute 4 ==
+Valve  [IF] open, releasing 7 pressure. total: 7.
+Current: IF  Current Elefant: AA
+
+m:3;IF;AA;0;0;
+== Minute 3 ==
+Valve  [] open, releasing 0 pressure. total: 0.
+Current: IF  Current Elefant: AA
+
+m:2;HK;AA;0;0;
+== Minute 2 ==
+Valve  [] open, releasing 0 pressure. total: 0.
+Current: HK  Current Elefant: AA
+
+m:1;AA;AA;0;0;
+== Minute 1 ==
+Valve  [] open, releasing 0 pressure. total: 0.
+Current: AA  Current Elefant: AA
+
+
+Process finished with exit code 0
