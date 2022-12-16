@@ -10,15 +10,17 @@ import java.util.*;
 public class Day16 extends BaseTest {
 
 	public static final int DAY = 16;
+	public static int skipGold = 0;
+	static int MAX_KNOWN = 0;
 	static Map<String, Valve> mapValve = new HashMap<>();
 	static int totalPresure = 0;
-	//	Map<String, State> DP = new HashMap<>();
+	static long DP_hit = 0;
 	Set<String> DP_SET = new HashSet<>();
+	Map<String, Integer> DP_MAP = new HashMap<>();
+
 	int currentMax = Integer.MIN_VALUE;
 	State currentMaxState;
-
 	Map<Integer, Integer> borders = new HashMap<>();
-	long DP_hit = 0;
 
 	@Ignore @Test public void runDownloadInput() throws Exception {
 		downloadInput(DAY);
@@ -30,53 +32,86 @@ public class Day16 extends BaseTest {
 		DP_SET.clear();
 		currentMax = Integer.MIN_VALUE;
 		currentMaxState = null;
+		DP_hit = 0;
+		DP_MAP.clear();
+		MAX_KNOWN = 2905;
+		totalPresure = 0;
 		runAny(true);
+		System.out.println("#####");
+		//		2371 - skip Gold 10
+		//		2318 - skip Gold 12
+		//      2787 - skip Gold 8 270 000 000
+		//      2787 - skip Gold 6 350 000 000
+		//      2865 - skip Gold 5 xxx 000 000
+		//      2905 - skip Gold 4 xxx 000 000
+		//      2905 - skip Gold 3  80 000 000
+		//      2905 - skip Gold 2  80 000 000
+		// 2911
 
-	}
+		System.out.println(skipGold * currentMaxState.releasingPressure + currentMaxState.totalReleasedPressure);
 
-	@Test public void runSilver() throws Exception {
-		runAny(false);
-	}
-
-	@Test public void runGold() throws Exception {
-		runAny(true);
 	}
 
 	public void runAny(boolean isGold) throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
+		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/sample.txt");
 		for (final String input : data) {
 			Valve.initValve(mapValve, input);
 		}
 		State start = new State(1, mapValve.get("AA"), mapValve.get("AA"), 0, 0, new HashSet<>(), null);
-		//		start.getNewState(true).get(3).getNewState(false).get(2).getNewState(true).get(3).getNewState(false);
 		startGame(start, isGold);
 		System.out.println(currentMax);
 		currentMaxState.print();
 
 	}
 
-	public boolean borderCheckPass(State current){
-		if (borders.isEmpty()){
+	public boolean borderCheckPass(State current) {
+		if (borders.isEmpty()) {
 			return true;
 		}
-		Integer  borderLimit  = borders.get(current.minute);
-		if (borderLimit!=null && borderLimit>current.totalReleasedPressure){
+		Integer borderLimit = borders.get(current.minute);
+		return borderLimit == null || borderLimit <= current.totalReleasedPressure;
+	}
+
+	public boolean bestCheckPass(State current) {
+		String idForBestCheck = current.getIdForBestCheck();
+		int currentValue = current.getTotalReleasedPressure();
+
+		if (currentValue + totalPresure * (26 - current.minute) < MAX_KNOWN) {
+			if (DP_hit % 100000 == 0) {
+				System.out.println("bestCheckPass not passed for : " + current);
+			}
 			return false;
+		}
+		if (DP_MAP.containsKey(idForBestCheck)) {
+			int bestValue = DP_MAP.get(idForBestCheck);
+			if (currentValue > bestValue) {
+				DP_MAP.put(idForBestCheck, currentValue);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			DP_MAP.put(idForBestCheck, currentValue);
 		}
 		return true;
 	}
+
 	public void startGame(State current, boolean isGold) {
-		if (current.getMinute() >= (isGold ? 26 : 30)) {
+		if (current.getMinute() >= (isGold ? 26 - skipGold : 30)) {
 			if (current.getTotalReleasedPressure() > currentMax) {
 				currentMax = Math.max(currentMax, current.getTotalReleasedPressure());
 				currentMaxState = current;
-				System.out.println("NEW max");
-				System.out.println(currentMax);
+				//				System.out.println("NEW max");
+				//				System.out.println(currentMax);
 				//				currentMaxState.print();
 			}
 			return;
 		}
-		if (!borderCheckPass(current)){
+		if (!borderCheckPass(current)) {
+			return;
+		}
+
+		if (!(bestCheckPass(current))) {
 			return;
 		}
 
@@ -99,12 +134,13 @@ public class Day16 extends BaseTest {
 	@Data static class State {
 
 		int minute;
-		Valve currentValve;
-		Valve currentValveElefant;
-
 		int releasingPressure;
 		int totalReleasedPressure;
 		Set<String> openedValveIds;
+		Valve currentValve;
+		Valve currentValveElefant;
+
+		String openedValveId;
 
 		State parent = null;
 
@@ -117,7 +153,6 @@ public class Day16 extends BaseTest {
 			this.totalReleasedPressure = totalReleasedPressure;
 			this.openedValveIds = openedValveIds;
 			this.parent = parent;
-
 		}
 
 		public List<State> getNewStateGold() {
@@ -136,22 +171,9 @@ public class Day16 extends BaseTest {
 			Valve secondValve = firstPlayer ? this.currentValveElefant : this.currentValve;
 			State parent = firstPlayer ? this : this.parent;
 			int newReleasingPressure = firstPlayer ? this.releasingPressure : 0;
-
-			List<State> stateList = new ArrayList<>();
-//
-//			if (newMinute > 13 && totalReleasedPressure < 300) {
-//				return stateList;
-//			}
-//
-//			if (newMinute > 10 && totalReleasedPressure < 159) {
-//				return stateList;
-//			}
-//
-//			if (newMinute > 7 && totalReleasedPressure < 49) {
-//				return stateList;
-//			}
-
 			Set<String> newList = new HashSet<>(openedValveIds);
+			List<State> stateList = new ArrayList<>();
+
 			State newState;
 			if (firstPlayer) {
 				newState = new State(newMinute, currentActor, secondValve, releasingPressure, totalReleasedPressure + newReleasingPressure,
@@ -195,17 +217,21 @@ public class Day16 extends BaseTest {
 				}
 			}
 
+			//			if (DP_hit % 1000000 == 0) {
+			//				System.out.println("new List size: " + newList.size() + " stateList: " + stateList.size() + " " + this.getId());
+			//			}
 			return stateList;
+		}
+
+		//
+		public String getIdForBestCheck() {
+			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";" + this.releasingPressure;
 		}
 
 		public String getId() {
 
-			//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"; //Silver
 			return "m:" + this.minute + ";" + currentValve.getName() + ";" + currentValveElefant.getName() + ";" + this.releasingPressure
 					+ ";" + this.totalReleasedPressure + ";"; //Gold
-			//
-			//			return "m:" + this.minute + ";" + currentValve.getName() + ";" + this.releasingPressure + ";" + this.totalReleasedPressure + ";"
-			//					+ String.join(",",  openedValveIds);
 		}
 
 		public void print() {
@@ -222,12 +248,12 @@ public class Day16 extends BaseTest {
 			}
 		}
 
-		public void populateBoarder(Map<Integer, Integer> borders){
-			if (!borders.containsKey(this.minute)){
+		public void populateBoarder(Map<Integer, Integer> borders) {
+			if (!borders.containsKey(this.minute)) {
 				System.out.println("Added: " + minute + "  " + this.totalReleasedPressure);
-				borders.put(minute,totalReleasedPressure);
+				borders.put(minute, totalReleasedPressure);
 			}
-			if (this.parent!=null){
+			if (this.parent != null) {
 				this.parent.populateBoarder(borders);
 			}
 		}
