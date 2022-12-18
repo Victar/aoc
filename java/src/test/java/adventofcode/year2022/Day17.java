@@ -24,7 +24,7 @@ public class Day17 extends BaseTest {
 
 	@Test
 	public void runBoth() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
+		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/sample.txt");
 		String pattern = data.get(0);
 		Board board = new Board();
 		Map<Long, Long> sizeAdded = new HashMap<>();
