@@ -14,10 +14,10 @@ public class Day19 extends BaseTest {
 
 	public static final int DAY = 19;
 
-	public static final int MINUTES = 32;
+	public static final int MINUTES_SILVER = 24;
+	public static final int MINUTES_GOLD = 32;
 
 	static long DP_hit = 0;
-//	int silverAnwer;
 	int currentMax = Integer.MIN_VALUE;
 	State currentMaxState = null;
 	Set<String> DP_SET = new HashSet<>();
@@ -26,70 +26,64 @@ public class Day19 extends BaseTest {
 		downloadInput(DAY);
 	}
 
-	@Test public void runGold() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
-		for (final String input : data) {
-			System.out.println(input);
-		}
+	@Test public void runSilver() throws Exception {
+		runAny(false);
 	}
 
-	@Test public void runSilver() throws Exception {
-		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/sample.txt");
+	@Test public void runGold() throws Exception {
+		runAny(true);
+	}
+
+	public void runAny(boolean isGold) throws Exception {
+		final ArrayList<String> data = readStringFromFile("year2022/day" + DAY + "/input.txt");
 		List<Blueprint> blueprintList = new ArrayList<>();
 		for (final String input : data) {
 			Blueprint blueprint = new Blueprint(input);
 			blueprintList.add(blueprint);
-			System.out.println(input);
-			System.out.println(blueprint);
-
 		}
-		int silverAnwer =0;
+		int silverAnwer = 0;
+		int goldAnswer = 1;
+		int count = isGold ? Math.min(blueprintList.size(), 3) : blueprintList.size();
 
-		int count = Math.min(blueprintList.size(), 3);
-		for (int i = 0; i <count; i++) {
-			System.out.println("##### BLUEPRINT: "+i+" ##### " );
+		for (int i = 0; i < count; i++) {
+			System.out.println("##### BLUEPRINT: " + i + " ##### ");
 			DP_SET.clear();
 			currentMax = -1;
 			currentMaxState = null;
 			Blueprint currentBlueprint = blueprintList.get(i);
 			State startState = new State(currentBlueprint);
-			startGame(startState);
-			System.out.println(currentMaxState);
+			startGame(startState, isGold ? MINUTES_GOLD : MINUTES_SILVER);
+			System.out.println("max: " + currentMax + "  " + currentMaxState);
+			goldAnswer = goldAnswer * currentMax;
 			silverAnwer = silverAnwer + currentMax * currentMaxState.blueprint.getId();
 		}
-		System.out.println(silverAnwer);
+		System.out.println(isGold ? goldAnswer : silverAnwer);
 	}
 
-	public boolean currentStateCanWin(final State state){
-		int minLeft = MINUTES - state.minute;
+	public boolean currentStateCanWin(final State state, int totalMinutes) {
 		int geoToWin = currentMax - state.geodeTotal;
-		if (geoToWin > maxGeoInDays(minLeft, state.geodeRobotCount)){
-			return false;
-		}
-		return true;
+		return geoToWin <= maxGeoInDays(state, totalMinutes);
 	}
-	public int maxGeoInDays(int minutes, int currentRobots){
-		int result = currentRobots;
-		for (int i=0; i<=minutes; i++){
-			result = result + i + currentRobots;
+
+	public int maxGeoInDays(State state, int totalMinutes) {
+		int minutesLeft = state.minutesLeft(totalMinutes);
+		int currentGeodeRobotCount = state.geodeRobotCount;
+		int result = currentGeodeRobotCount;
+		for (int i = 0; i <= minutesLeft; i++) {
+			result = result + i + currentGeodeRobotCount;
 		}
 		return result;
 	}
-	public void startGame(State current) {
-		if (current.getMinute() >= MINUTES) {
 
+	public void startGame(State current, int totalMinutes) {
+		if (current.getMinute() >= totalMinutes) {
 			if (current.geodeTotal > currentMax) {
-
 				currentMax = Math.max(currentMax, current.geodeTotal);
 				currentMaxState = current;
-				System.out.println("New max: " + currentMax + "  " + currentMaxState);
 			}
 			return;
 		}
-		if (!currentStateCanWin(current)){
-//						if (DP_hit%10000==0){
-//							System.out.println(current);
-//						}
+		if (!currentStateCanWin(current, totalMinutes)) {
 			return;
 		}
 		List<State> newStatesList = current.getStates();
@@ -100,7 +94,7 @@ public class Day19 extends BaseTest {
 				DP_hit++;
 			} else {
 				DP_SET.add(id);
-				startGame(state);
+				startGame(state, totalMinutes);
 			}
 		}
 	}
@@ -118,6 +112,7 @@ public class Day19 extends BaseTest {
 		int obsidianTotal;
 		int geodeTotal;
 		Blueprint blueprint;
+		State parent = null;
 
 		public State(Blueprint blueprint) {
 			this.minute = 0;
@@ -126,10 +121,7 @@ public class Day19 extends BaseTest {
 		}
 
 		public State(Blueprint blueprint, int minute, int oreRobotCount, int clayRobotCount, int obsidianRobotCount, int geodeRobotCount,
-		             int oreTotal, int clayTotal, int obsidianTotal, int geodeTotal) {
-			//			if (oreRobotCount>1){
-			//				System.out.println(oreRobotCount);
-			//			}
+		             int oreTotal, int clayTotal, int obsidianTotal, int geodeTotal, State parent) {
 			this.blueprint = blueprint;
 			this.minute = minute;
 			this.oreRobotCount = oreRobotCount;
@@ -140,6 +132,15 @@ public class Day19 extends BaseTest {
 			this.clayTotal = clayTotal;
 			this.obsidianTotal = obsidianTotal;
 			this.geodeTotal = geodeTotal;
+			this.parent = parent;
+		}
+
+		public int minutesLeft(int totalMinutes) {
+			return totalMinutes - minute;
+		}
+
+		public boolean canBuildGeo() {
+			return blueprint.geodeRobotCostOre <= oreTotal && blueprint.geodeRobotCostObsidian <= obsidianTotal;
 		}
 
 		public List<State> getStates() {
@@ -149,36 +150,42 @@ public class Day19 extends BaseTest {
 			int totalClay = clayTotal + clayRobotCount;
 			int totalObsidian = obsidianTotal + obsidianRobotCount;
 			int totalGeodeTotal = geodeTotal + geodeRobotCount;
-			//			if (totalClay > 0){
-			//				System.out.println("Prduciang clay " + totalClay);
-			//			}
-			//state without build
+			if (canBuildGeo()) { // Build geo if can
+				State state = new State(blueprint, nextMinute, //
+						oreRobotCount, clayRobotCount, obsidianRobotCount, geodeRobotCount + 1, // robots
+						totalOre - blueprint.geodeRobotCostOre, totalClay, totalObsidian - blueprint.geodeRobotCostObsidian, //matirials
+						totalGeodeTotal, this);
+				states.add(state);
+				return states;
+			}
+
 			int MAX_SIZE = 2;
 			for (int rO = 0; rO < MAX_SIZE; rO++) {
 				for (int rC = 0; rC < MAX_SIZE; rC++) {
-					for (int rB = 0; rB < MAX_SIZE; rB++) { //rB - obsidian;
-						for (int rG = 0; rG < MAX_SIZE; rG++) {
-							//try to build such robots;
-							int totalOreRobots =
-									rO * blueprint.oreRobotCostOre + rC * blueprint.clayRobotCostOre + rB * blueprint.obsidianRobotCostOre
-											+ rG * blueprint.geodeRobotCostOre;
-							int totalClayRobots = rB * blueprint.obsidianRobotCostClay;
-							int totalObsidianRobots = rG * blueprint.geodeRobotCostObsidian;
-							int totalRobotsPreMinute = rO + rC + rB + rG;
-							if (totalRobotsPreMinute < 2 && totalOreRobots <= this.oreTotal && totalClayRobots <= this.clayTotal
-									&& totalObsidianRobots <= this.obsidianTotal) {
-
+					for (int rB = 0; rB < MAX_SIZE; rB++) {
+						int totalOreRobots =
+								rO * blueprint.oreRobotCostOre + rC * blueprint.clayRobotCostOre + rB * blueprint.obsidianRobotCostOre;
+						int totalClayRobots = rB * blueprint.obsidianRobotCostClay;
+						int totalRobotsPerMinute = rO + rC + rB;
+						if (totalOreRobots <= this.oreTotal && totalClayRobots <= this.clayTotal) {
+							if (totalRobotsPerMinute == 1) {  //build Ore, Clay, Obsidian robots if can
 								State state = new State(blueprint, nextMinute, //
-										oreRobotCount + rO, clayRobotCount + rC, obsidianRobotCount + rB, geodeRobotCount + rG, // robots
-										totalOre - totalOreRobots, totalClay - totalClayRobots, totalObsidian - totalObsidianRobots,
-										totalGeodeTotal);
+										oreRobotCount + rO, clayRobotCount + rC, obsidianRobotCount + rB, geodeRobotCount, // robots
+										totalOre - totalOreRobots, totalClay - totalClayRobots, totalObsidian, totalGeodeTotal, this);
+								states.add(state);
+							}
+							if (totalRobotsPerMinute == 0 && totalOre
+									<= blueprint.maxOre) { //to reduce search add state without building robots only if not enough ore
+								State state = new State(blueprint, nextMinute, //
+										oreRobotCount + rO, clayRobotCount + rC, obsidianRobotCount + rB, geodeRobotCount,
+										// robots rO=rC=rB=0
+										totalOre - totalOreRobots, totalClay - totalClayRobots, totalObsidian, totalGeodeTotal, this);
 								states.add(state);
 							}
 						}
 					}
 				}
 			}
-
 			return states;
 		}
 
@@ -197,6 +204,7 @@ public class Day19 extends BaseTest {
 		int obsidianRobotCostClay;
 		int geodeRobotCostOre;
 		int geodeRobotCostObsidian;
+		int maxOre;
 
 		public Blueprint(String input) {
 			//			Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 8 clay. Each geode robot costs 2 ore and 15 obsidian.
@@ -211,6 +219,7 @@ public class Day19 extends BaseTest {
 			String[] geodeStr = robotsStr[3].split(" ");
 			geodeRobotCostOre = Integer.parseInt(geodeStr[5]);
 			geodeRobotCostObsidian = Integer.parseInt(geodeStr[8]);
+			maxOre = oreRobotCostOre + clayRobotCostOre + obsidianRobotCostOre + geodeRobotCostOre;
 		}
 	}
 
