@@ -57,7 +57,6 @@ public class Day20 extends BaseTest {
 		long num3 = numbers.get((index + 3000) % numbers.size()).getValue();
 		System.out.println("num1: " + num1 + " num2: " + num2 + " num3: " + num3);
 		System.out.println(num1 + num2 + num3);
-
 	}
 
 	@Data static class Number {
