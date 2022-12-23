@@ -247,6 +247,7 @@ public class Day22 extends BaseTest {
 		public static Point LEFT = Point.of(-1, 0, "LEFT");
 		public static Point DOWN = Point.of(0, 1, "DOWN");
 		public static Point UP = Point.of(0, -1, "UP");
+		public static List<Point> DIRECTIONS = Arrays.asList(RIGHT, DOWN, LEFT, UP);
 
 		public static Point CUBE_O = Point.of(0, 0, "~");
 		public static Point CUBE_1 = Point.of(1, 0, "1");
@@ -265,7 +266,6 @@ public class Day22 extends BaseTest {
 
 		public static List<Point> CUBES = Arrays.asList(CUBE_1, CUBE_2, CUBE_3, CUBE_4, CUBE_5, CUBE_6);
 
-		public static List<Point> DIRECTIONS = Arrays.asList(RIGHT, DOWN, LEFT, UP);
 		int x;
 		int y;
 		String type; // "#", ".", " ";
