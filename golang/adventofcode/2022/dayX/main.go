@@ -4,13 +4,15 @@ import (
 	"adventofcode/util"
 )
 
+var DAY = "X"
+
 func main() {
 	runSilver()
 	runGold()
 }
 
 func runSilver() {
-	lines, err := util.ReadFile("year2022/dayX/input.txt")
+	lines, err := util.ReadFile("year2022/day/" + DAY + "/input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +22,7 @@ func runSilver() {
 }
 
 func runGold() {
-	lines, err := util.ReadFile("year2022/dayX/input.txt")
+	lines, err := util.ReadFile("year2022/day/" + DAY + "/input.txt")
 	if err != nil {
 		panic(err)
 	}
