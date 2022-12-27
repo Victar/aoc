@@ -9,7 +9,6 @@ import (
 
 var DAY = "24"
 
-var mapField [][]byte
 var mapBlizzardsList = make(map[int][]*Blizzard)
 var xSize int
 var ySize int
@@ -72,7 +71,6 @@ func findPath(start, end *PointField) (steps int) {
 	visited[start.getState()] = true
 	for len(queue) > 0 {
 		size := len(queue)
-		//println(size)
 		for i := 0; i < size; i++ {
 			curr := queue[0]
 			queue = queue[1:]
@@ -80,11 +78,11 @@ func findPath(start, end *PointField) (steps int) {
 				return curr.step
 			}
 			neighbors := []PointField{
-				{point: curr.point.Add(image.Point{0, 0}), step: curr.step + 1, prev: curr},
-				{point: curr.point.Add(image.Point{0, +1}), step: curr.step + 1, prev: curr},
-				{point: curr.point.Add(image.Point{0, -1}), step: curr.step + 1, prev: curr},
-				{point: curr.point.Add(image.Point{+1, 0}), step: curr.step + 1, prev: curr},
-				{point: curr.point.Add(image.Point{-1, 0}), step: curr.step + 1, prev: curr},
+				{point: curr.point.Add(image.Point{}), step: curr.step + 1, prev: curr},
+				{point: curr.point.Add(image.Point{Y: +1}), step: curr.step + 1, prev: curr},
+				{point: curr.point.Add(image.Point{Y: -1}), step: curr.step + 1, prev: curr},
+				{point: curr.point.Add(image.Point{X: +1}), step: curr.step + 1, prev: curr},
+				{point: curr.point.Add(image.Point{X: -1}), step: curr.step + 1, prev: curr},
 			}
 			for _, next := range neighbors {
 				next := next
