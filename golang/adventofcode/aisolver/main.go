@@ -16,8 +16,8 @@ var maxToken = 2048
 var submitSolution = true
 
 var year = 2016
-var dayStart = 17
-var dayEnd = 17
+var dayStart = 18
+var daysToSolve = 1
 
 // Make sure
 // BaseDir, GptApiKey, AocSession are defined correctly
@@ -26,7 +26,7 @@ var dayEnd = 17
 // var AocSession = os.Getenv("ADVENT_OF_CODE_SESSION")
 
 func main() {
-	for day := dayStart; day <= dayEnd; day++ {
+	for day := dayStart; day <= dayStart+daysToSolve; day++ {
 		fmt.Printf("Running task for day %d...\n", day)
 		startTime := time.Now()
 		for attempt := 1; attempt <= 3; attempt++ {

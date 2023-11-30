@@ -66,10 +66,10 @@ func IsGlobalLeaderboardFull(year string, day string, level string) (bool, error
 	}
 	bodyString := string(bodyBytes)
 	if level == "1" {
-		return strings.Count(bodyString, "101)") >= 1, nil
+		return strings.Count(bodyString, "100)") >= 1, nil
 	}
 	if level == "2" {
-		return strings.Count(bodyString, "101)") >= 2, nil
+		return strings.Count(bodyString, "100)") >= 2, nil
 	}
 	return false, nil
 }
