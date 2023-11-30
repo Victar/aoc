@@ -1,0 +1,5 @@
+Please solve task below in golang, as a result needed "main.go" file.
+The input data are stored in "input.txt" in the same directory as provided "main.go".
+The program should print the answer only
+
+The task is:
