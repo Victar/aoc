@@ -32,6 +32,7 @@ input.txt
 ai_*
 #Ai solution during the december
 !ai_202312*
-
+go.mod
+ai
 
 .DS_Store

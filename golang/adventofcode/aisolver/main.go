@@ -13,10 +13,10 @@ import (
 var model = openai.GPT4TurboPreview
 var maxToken = 2048
 
-var submitSolution = true
+var submitSolution = false
 
-var year = 2016
-var dayStart = 18
+var year = 2023
+var dayStart = 1
 var daysToSolve = 1
 
 // Make sure
@@ -26,7 +26,7 @@ var daysToSolve = 1
 // var AocSession = os.Getenv("ADVENT_OF_CODE_SESSION")
 
 func main() {
-	for day := dayStart; day <= dayStart+daysToSolve; day++ {
+	for day := dayStart; day < dayStart+daysToSolve; day++ {
 		fmt.Printf("Running task for day %d...\n", day)
 		startTime := time.Now()
 		for attempt := 1; attempt <= 3; attempt++ {
