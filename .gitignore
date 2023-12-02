@@ -31,7 +31,8 @@ input.txt
 #Ai solved
 ai_*
 #Ai solution during the december
-!year2023/ai_*
+!ai_202312*
+java/src/test/resources/year2018
 go.mod
 ai
 
