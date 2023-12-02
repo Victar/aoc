@@ -37,16 +37,17 @@ type AiSolver struct {
 }
 
 type AocSolve struct {
-	AttemptLevel    string `json:"level,omitempty"`
-	AttemptAnswer   string `json:"answer,omitempty"`
-	AttemptResponse string `json:"attemptResponse,omitempty"`
-	AttemptInfo     string `json:"attemptInfo,omitempty"`
-	AttemptSuccess  bool   `json:"attemptSuccess,omitempty"`
-	AttemptWait     int    `json:"attemptWait,omitempty"`
+	AttemptLevel       string `json:"level,omitempty"`
+	AttemptAnswer      string `json:"answer,omitempty"`
+	AttemptResponse    string `json:"attemptResponse,omitempty"`
+	AttemptInfo        string `json:"attemptInfo,omitempty"`
+	AttemptSuccess     bool   `json:"attemptSuccess,omitempty"`
+	AttemptWait        int    `json:"attemptWait,omitempty"`
+	AttemptAllowSubmit bool   `json:"attemptAllowSubmit"`
 }
 
 func NewSolverTask(year int, day int, aiModel string, aiMaxTokens int) SolverTask {
-	return SolverTask{AocTask: AocTask{Year: strconv.Itoa(year), Day: strconv.Itoa(day)}, AiSolver: AiSolver{AIModel: aiModel, AIMaxTokens: aiMaxTokens}, AocSolve: AocSolve{}}
+	return SolverTask{AocTask: AocTask{Year: strconv.Itoa(year), Day: strconv.Itoa(day)}, AiSolver: AiSolver{AIModel: aiModel, AIMaxTokens: aiMaxTokens}, AocSolve: AocSolve{AttemptAllowSubmit: true}}
 }
 
 func (task *SolverTask) InitOacTask() error {
