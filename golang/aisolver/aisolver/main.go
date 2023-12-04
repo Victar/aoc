@@ -13,9 +13,11 @@ import (
 var model = openai.GPT4TurboPreview
 var maxToken = 2048
 
-// var submitAllow = false double check
+var submitAllow = true // double check
+var runSolved = true   // double check
+
 var year = 2023
-var dayStart = 3
+var dayStart = 4
 var daysToSolve = 1
 var attempts = 1
 
@@ -64,7 +66,7 @@ func runAny(task *util.SolverTask) error {
 		return err
 	}
 
-	if task.IsSolved() {
+	if task.IsSolved() && !runSolved {
 		return nil
 	} else {
 		//Task is not solve prepare AI to
@@ -107,7 +109,7 @@ func runAny(task *util.SolverTask) error {
 		if !isFull {
 			task.AocSolve.AttemptInfo = "LeaderBoard is not full solution was not submitted"
 			task.AocSolve.AttemptAllowSubmit = false
-		} else {
+		} else if submitAllow {
 			answerText, err := util.SubmitAnswer(task.AocTask.Year, task.AocTask.Day, level, task.AiSolver.AIAnswer)
 			if err != nil {
 				return err
