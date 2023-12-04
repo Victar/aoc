@@ -15,7 +15,7 @@ var maxToken = 2048
 
 // var submitAllow = false double check
 var year = 2023
-var dayStart = 2
+var dayStart = 3
 var daysToSolve = 1
 var attempts = 1
 
