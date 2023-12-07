@@ -11,13 +11,13 @@ import (
 )
 
 var model = openai.GPT4TurboPreview
-var maxToken = 3048
+var maxToken = 4000
 
 var submitAllow = false // double check
 var runSolved = true    // double check
 
 var year = 2023
-var dayStart = 5
+var dayStart = 7
 var daysToSolve = 1
 var attempts = 1
 
