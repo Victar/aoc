@@ -17,9 +17,9 @@ var submitAllow = false // double check
 var runSolved = true    // double check
 
 var year = 2023
-var dayStart = 7
+var dayStart = 8
 var daysToSolve = 1
-var attempts = 1
+var attempts = 3
 
 // Make sure
 // BaseDir, GptApiKey, AocSession are defined correctly
@@ -44,7 +44,7 @@ func main() {
 			}
 			if !task.AocSolve.AttemptAllowSubmit {
 				fmt.Printf("Submit is not allowed  %d!\n", attempt)
-				break
+				continue
 			}
 			if task.AocSolve.AttemptWait > 0 {
 				waitNSeconds(task.AocSolve.AttemptWait)
