@@ -11,15 +11,15 @@ import (
 )
 
 var model = openai.GPT4TurboPreview
-var maxToken = 4000
+var maxToken = 4096
 
 var submitAllow = false // double check
 var runSolved = true    // double check
 
 var year = 2023
-var dayStart = 8
+var dayStart = 11
 var daysToSolve = 1
-var attempts = 3
+var attempts = 1
 
 // Make sure
 // BaseDir, GptApiKey, AocSession are defined correctly
@@ -69,12 +69,10 @@ func runAny(task *util.SolverTask) error {
 	if task.IsSolved() && !runSolved {
 		return nil
 	} else {
-		//Task is not solve prepare AI to
-		contentHint, err := util.ReadFileSingle("aisolver/hint.txt")
+		err := task.InitPrompt()
 		if err != nil {
 			return err
 		}
-		task.AiSolver.AIPrompt = contentHint + task.GetTaskText()
 		solution := util.GetGPTResponseChat(task.AiSolver.AIPrompt, task.AiSolver.AIModel, task.AiSolver.AIMaxTokens)
 		task.AiSolver.AIResponse = solution
 		goCode, err := extractGoCode(solution)

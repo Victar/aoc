@@ -3,3 +3,4 @@ The input data are stored in "input.txt" in the same directory as provided "main
 The program should print the answer only
 
 The task is:
+{AOC_TASK}

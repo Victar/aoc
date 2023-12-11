@@ -10,6 +10,21 @@ import (
 	"time"
 )
 
+func ReadInput(path string) ([][]rune, error) {
+	file, err := os.Open(BaseDir + path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines [][]rune
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, []rune(scanner.Text()))
+	}
+	return lines, scanner.Err()
+}
+
 func ReadFile(path string) ([]string, error) {
 	file, err := os.Open(BaseDir + path)
 	if err != nil {

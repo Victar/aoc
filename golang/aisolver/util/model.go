@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -29,6 +30,7 @@ type AiSolver struct {
 	AIModel              string `json:"aiModel,omitempty"`
 	AIMaxTokens          int    `json:"aiMaxTokens,omitempty"`
 	AIPrompt             string `json:"aiPrompt,omitempty"`
+	AIPromptTemplate     string `json:"aiPromptTemplate,omitempty"`
 	AIResponse           string `json:"aiResponse,omitempty"`
 	AIResponseCode       string `json:"aiResponseCode,omitempty"`
 	AIResponseCodeOutput string `json:"aiResponseCodeOutput,omitempty"`
@@ -67,6 +69,33 @@ func (task *SolverTask) InitOacTask() error {
 		task.AocTask.Text = textText
 	}
 	return nil
+}
+
+func (task *SolverTask) InitPrompt() error {
+
+	promptTemplate, err := ReadFileSingle("aisolver/promptTemplate.txt")
+	if err != nil {
+		return err
+	}
+	task.AiSolver.AIPromptTemplate = promptTemplate
+	promptTemplate = strings.Replace(promptTemplate, "{AOC_TASK}", task.GetTaskText(), -1)
+	promptTemplate = strings.Replace(promptTemplate, "{AOC_INPUT}", getFirstNLines(task.AocTask.Input, 10), -1)
+	task.AiSolver.AIPrompt = promptTemplate
+	fmt.Println(task.AiSolver.AIPrompt)
+	return nil
+}
+
+func getFirstNLines(inputString string, n int) string {
+	// Split the string into lines
+	lines := strings.Split(inputString, "\n")
+
+	// Take the first 10 lines (or fewer if the string has fewer lines)
+	if len(lines) > n {
+		lines = lines[:n]
+	}
+	result := strings.Join(lines, "\n")
+
+	return result
 }
 
 func (task *SolverTask) IsSolved() bool {
