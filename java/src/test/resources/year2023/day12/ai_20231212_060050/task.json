@@ -1,0 +1,16 @@
+{
+  "aocTask": {
+    "year": "2023",
+    "day": "12",
+    "silverSolved": false,
+    "goldSolved": false
+  },
+  "aiSolver": {
+    "aiModel": "gpt-4-1106-preview",
+    "aiMaxTokens": 4096,
+    "aiAnswerFound": false
+  },
+  "aocSolve": {
+    "attemptAllowSubmit": true
+  }
+}
