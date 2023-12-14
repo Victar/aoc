@@ -1,0 +1,11 @@
+Please solve task below in golang, as a result needed "main.go" file.
+The input data are stored in "input.txt" in the same directory as provided "main.go".
+The program should print the answer only
+
+The task is:
+{AOC_TASK}
+========
+First few Lines of input files are:
+{AOC_INPUT}
+...
+Please be careful with all the requirements including platform tilting first, I will pay 200 USD for the correct solution.
