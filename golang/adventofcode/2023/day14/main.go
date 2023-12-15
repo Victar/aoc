@@ -3,6 +3,10 @@ package main
 import (
 	"adventofcode/util"
 	"fmt"
+	"image"
+	"image/color"
+	"image/gif"
+	"os"
 )
 
 var DAY = "14"
@@ -10,6 +14,55 @@ var DAY = "14"
 func main() {
 	runSilver()
 	runGold()
+}
+
+var images []*image.Paletted
+var delays []int
+
+func createAnimation(runesGrid [][]rune) {
+	var w, h, size int = len(runesGrid), len(runesGrid[0]), 10
+
+	colorZero := color.RGBA{0xff, 0xff, 0x00, 0xff}
+	colorDot := color.RGBA{0xff, 0xff, 0xff, 0xff}
+	colorStone := color.RGBA{0x00, 0x00, 0xff, 0xff}
+	var palette = []color.Color{
+		color.RGBA{0x00, 0x00, 0x00, 0xff},
+		color.RGBA{0x00, 0x00, 0xff, 0xff},
+		color.RGBA{0x00, 0xff, 0x00, 0xff},
+		color.RGBA{0x00, 0xff, 0xff, 0xff},
+		color.RGBA{0xff, 0x00, 0x00, 0xff},
+		color.RGBA{0xff, 0x00, 0xff, 0xff},
+		color.RGBA{0xff, 0xff, 0x00, 0xff},
+		color.RGBA{0xff, 0xff, 0xff, 0xff},
+	}
+	img := image.NewPaletted(image.Rect(0, 0, w*size, h*size), palette)
+	height := len(runesGrid)
+	width := len(runesGrid[0])
+	//North
+	for col := 0; col < width; col++ {
+		for row := 0; row < height; row++ {
+			currentCell := runesGrid[row][col]
+			if currentCell == 'O' {
+				img.Set(col, row, colorZero)
+			}
+			if currentCell == '.' {
+				img.Set(col, row, colorDot)
+			}
+			if currentCell == '#' {
+				img.Set(col, row, colorStone)
+			}
+		}
+	}
+	images = append(images, img)
+	delays = append(delays, 100)
+}
+func saveAnimation() {
+	f, _ := os.OpenFile(util.BaseDir+"year2023/day14/input.gif", os.O_WRONLY|os.O_CREATE, 0600)
+	defer f.Close()
+	gif.EncodeAll(f, &gif.GIF{
+		Image: images,
+		Delay: delays,
+	})
 }
 func runSilver() {
 	grid, err := util.ReadInput("year2023/day" + DAY + "/input.txt")
@@ -43,6 +96,7 @@ func runGold() {
 		}
 	}
 	fmt.Println(combinationVal[(1000000000-cycleStart-1)%cycleLength+cycleStart])
+	saveAnimation()
 }
 
 func gridToString(grid [][]rune) string {
@@ -79,8 +133,10 @@ func rollRocksCycle(runesGrid [][]rune, isGold bool) int {
 				}
 			}
 		}
-		load = calculateLoad(runesGrid)
 	}
+	load = calculateLoad(runesGrid)
+	createAnimation(runesGrid)
+
 	// West
 	for col := 0; col < width; col++ {
 		for row := 0; row < height; row++ {
@@ -97,6 +153,8 @@ func rollRocksCycle(runesGrid [][]rune, isGold bool) int {
 			}
 		}
 	}
+	createAnimation(runesGrid)
+
 	// South
 	for col := 0; col < width; col++ {
 		for row := height - 1; row >= 0; row-- {
@@ -113,6 +171,8 @@ func rollRocksCycle(runesGrid [][]rune, isGold bool) int {
 			}
 		}
 	}
+	createAnimation(runesGrid)
+
 	// East
 	for col := width - 1; col >= 0; col-- {
 		for row := 0; row < height; row++ {
@@ -129,6 +189,8 @@ func rollRocksCycle(runesGrid [][]rune, isGold bool) int {
 			}
 		}
 	}
+	createAnimation(runesGrid)
+
 	if isGold {
 		load = calculateLoad(runesGrid)
 	}
