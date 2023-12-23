@@ -17,7 +17,7 @@ var submitAllow = false // double check
 var runSolved = true    // double check
 
 var year = 2023
-var dayStart = 22
+var dayStart = 23
 var daysToSolve = 1
 var attempts = 1
 
