@@ -5,13 +5,85 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var DAY = "18"
 
+// Point represents coordinates x, y in a 2D grid
+type Point struct {
+	x, y int
+}
+
+// Bounds holds the minimum and maximum values of x and y
+type Bounds struct {
+	minX, maxX, minY, maxY int
+}
+
+// Size returns the width and height of the area within the bounds.
+func (b Bounds) Size() (int, int) {
+	return b.maxX - b.minX + 1, b.maxY - b.minY + 1
+}
+
 func main() {
 	runSilver()
-	//runGold()
+	runGold()
+}
+func runGold() {
+	lines, err := util.ReadFile("year2023/day" + DAY + "/input.txt")
+	if err != nil {
+		panic(err)
+	}
+	points := make([]Point, 0, len(lines))
+	points = append(points, Point{0, 0})
+	start := Point{0, 0}
+	points = append(points)
+
+	for _, line := range lines {
+		parts := strings.Split(line, " ")
+		nums := parts[2][2:7]
+		dir := parts[2][7:8]
+		n, _ := strconv.ParseInt(nums, 16, 0)
+		switch dir {
+		case "0":
+			start.x += int(n)
+		case "1":
+			start.y += int(n)
+		case "2":
+			start.x -= int(n)
+		case "3":
+			start.y -= int(n)
+		}
+		points = append(points, start)
+	}
+	var ans = shoelaceManhattanFormula(points) + 1
+	fmt.Println(ans)
+}
+
+func shoelaceManhattanFormula(points []Point) int {
+	n := len(points)
+	if n < 3 {
+		return 0
+	}
+	area := 0
+	for i := 0; i < n; i++ {
+		point, pointNext := points[i], points[(i+1)%n]
+		shoelace := (point.x * pointNext.y) - (pointNext.x * point.y)
+		manhattan := abs(point.x-pointNext.x) + abs(point.y-pointNext.y)
+		area += shoelace + manhattan
+	}
+	area = area / 2
+	if area < 0 {
+		area = -area
+	}
+	return area
+}
+
+func abs(c int) int {
+	if c < 0 {
+		return -c
+	}
+	return c
 }
 
 func runSilver() {
@@ -64,9 +136,6 @@ func runSilver() {
 	}
 
 	areaFull := isInside(bounds, areaBorder)
-	drawArea(bounds, areaBorder)
-	fmt.Println()
-	drawArea(bounds, areaFull)
 	fmt.Println(len(areaFull))
 
 }
@@ -127,29 +196,4 @@ func drawArea(bounds Bounds, visited map[Point]bool) {
 		}
 		fmt.Println(line)
 	}
-}
-
-func runGold() {
-	lines, err := util.ReadFile("year2023/day" + DAY + "/input.txt")
-	if err != nil {
-		panic(err)
-	}
-	for _, line := range lines {
-		println(line)
-	}
-}
-
-// Point represents coordinates x, y in a 2D grid
-type Point struct {
-	x, y int
-}
-
-// Bounds holds the minimum and maximum values of x and y
-type Bounds struct {
-	minX, maxX, minY, maxY int
-}
-
-// Size returns the width and height of the area within the bounds.
-func (b Bounds) Size() (int, int) {
-	return b.maxX - b.minX + 1, b.maxY - b.minY + 1
 }
