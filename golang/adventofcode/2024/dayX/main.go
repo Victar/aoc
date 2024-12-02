@@ -23,7 +23,7 @@ func runSilver() {
 }
 
 func runGold() {
-	lines, err := util.ReadFile("year2016/day" + DAY + "/input.txt")
+	lines, err := util.ReadFile("year2024/day" + DAY + "/input.txt")
 	if err != nil {
 		panic(err)
 	}
