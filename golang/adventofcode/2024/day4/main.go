@@ -21,7 +21,6 @@ func runBoth() {
 	}
 	countSilver := 0
 	countGold := 0
-
 	for r := range grid.Grid {
 		for c := range grid.Grid[r] {
 			if grid.At(r, c) == 'X' {
@@ -38,9 +37,10 @@ func runBoth() {
 
 func validSilver(grid *util.Grid, r, c int) int {
 	count := 0
+	curPoint := util.NewPoint(r, c)
 	for _, dir := range util.DIRECTIONS_ALL {
-		if grid.IsValid(r+3*dir.R, c+3*dir.C) {
-			if grid.At(r+dir.R, c+dir.C) == 'M' && grid.At(r+2*dir.R, c+2*dir.C) == 'A' && grid.At(r+3*dir.R, c+3*dir.C) == 'S' {
+		if grid.IsValidPoint(curPoint.AddPoint(dir.TimesPoint(3))) {
+			if grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(1))) == 'M' && grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(2))) == 'A' && grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(3))) == 'S' {
 				count++
 			}
 		}
@@ -50,23 +50,21 @@ func validSilver(grid *util.Grid, r, c int) int {
 
 func validGold(grid *util.Grid, r, c int) int {
 	count := 0
-	//M.S
-	//.A.
-	//M.S
-	if grid.IsValid(r-1, c-1) && grid.IsValid(r+1, c+1) {
-		if grid.At(r-1, c-1) == 'M' && grid.At(r-1, c+1) == 'M' && grid.At(r+1, c-1) == 'S' && grid.At(r+1, c+1) == 'S' {
-			count++
-		}
-		if grid.At(r-1, c-1) == 'M' && grid.At(r-1, c+1) == 'S' && grid.At(r+1, c-1) == 'M' && grid.At(r+1, c+1) == 'S' {
-			count++
-		}
-		if grid.At(r-1, c-1) == 'S' && grid.At(r-1, c+1) == 'S' && grid.At(r+1, c-1) == 'M' && grid.At(r+1, c+1) == 'M' {
-			count++
-		}
-		if grid.At(r-1, c-1) == 'S' && grid.At(r-1, c+1) == 'M' && grid.At(r+1, c-1) == 'S' && grid.At(r+1, c+1) == 'M' {
-			count++
+	patterns := [][]rune{{'M', 'M', 'S', 'S'}, {'M', 'S', 'M', 'S'}, {'S', 'S', 'M', 'M'}, {'S', 'M', 'S', 'M'}}
+	directions := []util.Direction{util.LEFT_UP, util.LEFT_DOWN, util.RIGHT_UP, util.RIGHT_DOWN}
+	curPoint := util.NewPoint(r, c)
+	if grid.IsValidPoint(curPoint.AddDirection(util.LEFT_UP)) && grid.IsValidPoint(curPoint.AddDirection(util.RIGHT_DOWN)) {
+		for _, pattern := range patterns {
+			valid := true
+			for i, direction := range directions {
+				if grid.AtPoint(curPoint.AddDirection(direction)) != pattern[i] {
+					valid = false
+				}
+			}
+			if valid {
+				count++
+			}
 		}
 	}
-
 	return count
 }

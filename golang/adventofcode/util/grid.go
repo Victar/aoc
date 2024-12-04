@@ -1,30 +1,41 @@
 package util
 
-//const (
-//	LEFT       = Point{-1, 0}
-//	LEFT_UP    = Point{-1, -1}
-//	LEFT_DOWN  = Point{-1, 1}
-//	RIGHT      = Point{1, 0}
-//	RIGHT_UP   = Point{1, -1}
-//	RIGHT_DOWN = Point{1, 1}
-//	UP         = Point{0, -1}
-//	DOWN       = Point{0, 1}
-//)
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
-var LEFT = Point{-1, 0}
-var LEFT_UP = Point{-1, -1}
-var LEFT_DOWN = Point{-1, 1}
-var RIGHT = Point{1, 0}
-var RIGHT_UP = Point{1, -1}
-var RIGHT_DOWN = Point{1, 1}
-var UP = Point{0, -1}
-var DOWN = Point{0, 1}
+type Direction string
 
-var DIRECTIONS_ALL = []Point{LEFT, LEFT_UP, LEFT_DOWN, RIGHT, RIGHT_UP, RIGHT_DOWN, UP, DOWN}
-var DIRECTIONS_CROS = []Point{LEFT, RIGHT, UP, DOWN}
+const (
+	LEFT       Direction = "LEFT"
+	LEFT_UP    Direction = "LEFT_UP"
+	LEFT_DOWN  Direction = "LEFT_DOWN"
+	RIGHT      Direction = "RIGHT"
+	RIGHT_UP   Direction = "RIGHT_UP"
+	RIGHT_DOWN Direction = "RIGHT_DOWN"
+	UP         Direction = "UP"
+	DOWN       Direction = "DOWN"
+)
+
+var Directions = map[Direction]Point{
+	LEFT:       {-1, 0},
+	LEFT_UP:    {-1, -1},
+	LEFT_DOWN:  {-1, 1},
+	RIGHT:      {1, 0},
+	RIGHT_UP:   {1, -1},
+	RIGHT_DOWN: {1, 1},
+	UP:         {0, -1},
+	DOWN:       {0, 1},
+}
+
+var DIRECTIONS_ALL = []Point{
+	{-1, 0}, {-1, -1}, {-1, 1}, {1, 0}, {1, -1}, {1, 1}, {0, -1}, {0, 1},
+}
 
 type Point struct {
-	C, R int
+	r, c int
 }
 
 type Grid struct {
@@ -36,6 +47,30 @@ func NewGridEmpty() *Grid {
 	return &Grid{
 		Grid: grid,
 	}
+}
+func NewPoint(r, c int) Point {
+	return Point{
+		r: r,
+		c: c,
+	}
+}
+
+func (p Point) AddDirection(direction Direction) Point {
+	if dir, exists := Directions[direction]; exists {
+		return Point{r: p.r + dir.r, c: p.c + dir.c}
+	}
+	return p
+}
+
+func (p Point) AddPoint(point Point) Point {
+	return Point{
+		r: p.r + point.r,
+		c: p.c + point.c,
+	}
+}
+
+func (p Point) TimesPoint(times int) Point {
+	return Point{r: p.r * times, c: p.c * times}
 }
 
 func NewGrid(lines []string) *Grid {
@@ -59,10 +94,52 @@ func (g *Grid) Print() {
 	}
 }
 
+func (g *Grid) PrintDebug() {
+	if len(g.Grid) == 0 {
+		fmt.Println("Grid is empty")
+		return
+	}
+	fmt.Printf("Grid row %d columns %d \n", len(g.Grid), len(g.Grid[0]))
+	columns := len(g.Grid[0])
+	if columns > 10 {
+		firstLine := ""
+		for i := 0; i < 10; i++ {
+			firstLine += strings.Repeat(strconv.Itoa(i), 10)
+		}
+		println(strings.Repeat(firstLine, columns/100+1)[:columns])
+	}
+	println(strings.Repeat("0123456789", columns/10+1)[:columns])
+
+	for i, line := range g.Grid {
+		println(string(line), i)
+	}
+	fmt.Println()
+
+}
+
+func (g *Grid) IsValidPoint(p Point) bool {
+	return g.IsValid(p.r, p.c)
+}
+
 func (g *Grid) IsValid(r, c int) bool {
 	return r >= 0 && c >= 0 && r < len(g.Grid) && c < len(g.Grid[0])
 }
 
 func (g *Grid) At(r, c int) rune {
 	return g.Grid[r][c]
+}
+
+func (g *Grid) AtPoint(p Point) rune {
+	return g.At(p.r, p.c)
+}
+
+func (g *Grid) Neighbors(p Point) []Point {
+	var neighbors []Point
+	for _, dir := range DIRECTIONS_ALL {
+		neighbor := Point{r: p.r + dir.r, c: p.c + dir.c}
+		if g.IsValidPoint(neighbor) {
+			neighbors = append(neighbors, neighbor)
+		}
+	}
+	return neighbors
 }
