@@ -20,14 +20,14 @@ const (
 )
 
 var Directions = map[Direction]Point{
-	LEFT:       {-1, 0},
+	LEFT:       {0, -1},
 	LEFT_UP:    {-1, -1},
-	LEFT_DOWN:  {-1, 1},
-	RIGHT:      {1, 0},
-	RIGHT_UP:   {1, -1},
+	LEFT_DOWN:  {1, -1},
+	RIGHT:      {0, 1},
+	RIGHT_UP:   {-1, 1},
 	RIGHT_DOWN: {1, 1},
-	UP:         {0, -1},
-	DOWN:       {0, 1},
+	UP:         {-1, 0},
+	DOWN:       {1, 0},
 }
 
 var DIRECTIONS_ALL = []Point{
@@ -48,6 +48,53 @@ func NewGridEmpty() *Grid {
 		Grid: grid,
 	}
 }
+
+func (g *Grid) Copy() *Grid {
+	if g == nil {
+		return nil
+	}
+
+	newGrid := make([][]rune, len(g.Grid))
+	for i := range g.Grid {
+		newGrid[i] = make([]rune, len(g.Grid[i]))
+		copy(newGrid[i], g.Grid[i])
+	}
+	return &Grid{
+		Grid: newGrid,
+	}
+}
+
+func (g *Grid) RowColLength() (int, int) {
+	if g == nil || len(g.Grid) == 0 {
+		return 0, 0
+	}
+	return len(g.Grid), len(g.Grid[0])
+}
+
+func (g *Grid) CountRune(char rune) int {
+	count := 0
+	for _, row := range g.Grid {
+		for _, cell := range row {
+			if cell == char {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+func (g *Grid) SetRune(r, c int, char rune) {
+	if g.IsValid(r, c) {
+		g.Grid[r][c] = char
+	} else {
+		panic(fmt.Sprintf("(%d,%d)", r, c))
+	}
+}
+
+func (p Point) String() string {
+	return fmt.Sprintf("(%d,%d)", p.r, p.c)
+}
+
 func NewPoint(r, c int) Point {
 	return Point{
 		r: r,
@@ -112,6 +159,36 @@ func (g *Grid) PrintDebug() {
 
 	for i, line := range g.Grid {
 		println(string(line), i)
+	}
+	fmt.Println()
+
+}
+
+func (g *Grid) PrintDebugWithDots(visited map[Point]bool) {
+	if len(g.Grid) == 0 {
+		fmt.Println("Grid is empty")
+		return
+	}
+	fmt.Printf("Grid row %d columns %d \n", len(g.Grid), len(g.Grid[0]))
+	columns := len(g.Grid[0])
+	if columns > 10 {
+		firstLine := ""
+		for i := 0; i < 10; i++ {
+			firstLine += strings.Repeat(strconv.Itoa(i), 10)
+		}
+		println(strings.Repeat(firstLine, columns/100+1)[:columns])
+	}
+	println(strings.Repeat("0123456789", columns/10+1)[:columns])
+
+	for i, line := range g.Grid {
+		println()
+		for j, char := range line {
+			if visited[Point{i, j}] {
+				print("X")
+			} else {
+				print(string(char))
+			}
+		}
 	}
 	fmt.Println()
 
