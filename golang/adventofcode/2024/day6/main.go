@@ -24,7 +24,7 @@ func runBoth() {
 	for _, line := range lines {
 		grid.AddRaw(line)
 	}
-	_, silverAns := isGridCycles(grid)
+	_, silverAns := isGridCycled(grid)
 	println(silverAns)
 
 	sizeR, sizeC := grid.RowColLength()
@@ -33,7 +33,7 @@ func runBoth() {
 		for c := 0; c < sizeC; c++ {
 			gridCopy := grid.Copy()
 			gridCopy.SetRune(r, c, '#')
-			cycled, _ := isGridCycles(gridCopy)
+			cycled, _ := isGridCycled(gridCopy)
 			if cycled {
 				goldAns++
 			}
@@ -42,28 +42,28 @@ func runBoth() {
 	println(goldAns)
 }
 
-func isGridCycles(grid *util.Grid) (bool, int) {
+func isGridCycled(grid *util.Grid) (bool, int) {
 	startPoint, curDirection := findStartPosition(grid)
 	visitedPositions := make(map[Position]bool)
 	visitedPoints := make(map[util.Point]bool)
 	visitedPoints[startPoint] = true
 	curPoint := startPoint
 	for {
-		curPosition := Position{curPoint, curDirection}
-		if visitedPositions[curPosition] {
-			return true, len(visitedPoints)
-		} else {
-			visitedPositions[curPosition] = true
-		}
 		nextPoint := curPoint.AddDirection(curDirection)
 		if !grid.IsValidPoint(nextPoint) {
 			break
 		}
-		if grid.AtPoint(nextPoint) != '#' {
+		if grid.AtPoint(nextPoint) == '#' {
+			curDirection = turnRight(curDirection)
+		} else {
+			curPosition := Position{curPoint, curDirection}
+			if visitedPositions[curPosition] {
+				return true, len(visitedPoints)
+			} else {
+				visitedPositions[curPosition] = true
+			}
 			curPoint = nextPoint
 			visitedPoints[curPoint] = true
-		} else {
-			curDirection = turnRight(curDirection)
 		}
 	}
 	return false, len(visitedPoints)
