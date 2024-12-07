@@ -39,6 +39,10 @@ func runAny(isGold bool) {
 
 func canBeTrue(numbers []int, targetValue int, curValue int, isGold bool) bool {
 
+	if curValue > targetValue {
+		return false
+	}
+
 	if len(numbers) == 0 {
 		return curValue == targetValue
 	}
@@ -49,6 +53,6 @@ func canBeTrue(numbers []int, targetValue int, curValue int, isGold bool) bool {
 
 	return canBeTrue(numbers[1:], targetValue, curValueAdd, isGold) ||
 		canBeTrue(numbers[1:], targetValue, curValueMult, isGold) ||
-		(canBeTrue(numbers[1:], targetValue, curValueCombine, isGold) && isGold)
+		(isGold && canBeTrue(numbers[1:], targetValue, curValueCombine, isGold))
 
 }
