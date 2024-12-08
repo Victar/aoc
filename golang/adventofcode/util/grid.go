@@ -109,11 +109,29 @@ func (p Point) AddDirection(direction Direction) Point {
 	return p
 }
 
+func (p Point) R() int {
+	return p.r
+}
+
+func (p Point) C() int {
+	return p.c
+}
 func (p Point) AddPoint(point Point) Point {
 	return Point{
 		r: p.r + point.r,
 		c: p.c + point.c,
 	}
+}
+
+func (p Point) MinusPoint(point Point) Point {
+	return Point{
+		r: p.r - point.r,
+		c: p.c - point.c,
+	}
+}
+
+func (p Point) EqualPoint(point Point) bool {
+	return p.r == point.r && p.c == point.c
 }
 
 func (p Point) TimesPoint(times int) Point {
