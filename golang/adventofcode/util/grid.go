@@ -64,23 +64,23 @@ func (g *Grid) Copy() *Grid {
 	}
 }
 
-func (g *Grid) RowColLength() (int, int) {
+func (g *Grid) RowColSize() (int, int) {
 	if g == nil || len(g.Grid) == 0 {
 		return 0, 0
 	}
 	return len(g.Grid), len(g.Grid[0])
 }
 
-func (g *Grid) CountRune(char rune) int {
-	count := 0
-	for _, row := range g.Grid {
-		for _, cell := range row {
+func (g *Grid) CollectPoints(char rune) map[Point]bool {
+	result := map[Point]bool{}
+	for r, row := range g.Grid {
+		for c, cell := range row {
 			if cell == char {
-				count++
+				result[NewPoint(r, c)] = true
 			}
 		}
 	}
-	return count
+	return result
 }
 
 func (g *Grid) SetRune(r, c int, char rune) {
@@ -148,7 +148,7 @@ func NewGrid(lines []string) *Grid {
 	}
 }
 
-func (g *Grid) AddRaw(line string) {
+func (g *Grid) AddRow(line string) {
 	g.Grid = append(g.Grid, []rune(line))
 
 }

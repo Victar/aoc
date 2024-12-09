@@ -17,7 +17,7 @@ func runBoth() {
 	}
 	var grid = util.NewGridEmpty()
 	for _, line := range lines {
-		grid.AddRaw(line)
+		grid.AddRow(line)
 	}
 	countSilver := 0
 	countGold := 0

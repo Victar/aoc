@@ -18,9 +18,9 @@ func runAny(isGold bool) {
 	}
 	var grid = util.NewGridEmpty()
 	for _, line := range lines {
-		grid.AddRaw(line)
+		grid.AddRow(line)
 	}
-	rSize, cSize := grid.RowColLength()
+	rSize, cSize := grid.RowColSize()
 	antennaLocations := make(map[rune][]util.Point)
 	for r := 0; r < rSize; r++ {
 		for c := 0; c < cSize; c++ {

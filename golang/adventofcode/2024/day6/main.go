@@ -22,12 +22,12 @@ func runBoth() {
 	}
 	var grid = util.NewGridEmpty()
 	for _, line := range lines {
-		grid.AddRaw(line)
+		grid.AddRow(line)
 	}
 	_, silverAns := isGridCycled(grid)
 	println(silverAns)
 
-	sizeR, sizeC := grid.RowColLength()
+	sizeR, sizeC := grid.RowColSize()
 	goldAns := 0
 	for r := 0; r < sizeR; r++ {
 		for c := 0; c < sizeC; c++ {
