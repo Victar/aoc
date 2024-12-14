@@ -116,6 +116,13 @@ func (p Point) R() int {
 func (p Point) C() int {
 	return p.c
 }
+func (p Point) AddPointInBorder(point Point, maxR, maxC int) Point {
+	return Point{
+		r: (p.r + point.r + maxR) % maxR,
+		c: (p.c + point.c + maxC) % maxC,
+	}
+}
+
 func (p Point) AddPoint(point Point) Point {
 	return Point{
 		r: p.r + point.r,
@@ -183,6 +190,9 @@ func (g *Grid) PrintDebug() {
 }
 
 func (g *Grid) PrintDebugWithDots(visited map[Point]bool) {
+	g.PrintDebugWithDotsSymbol(visited, 'X')
+}
+func (g *Grid) PrintDebugWithDotsSymbol(visited map[Point]bool, symbol rune) {
 	if len(g.Grid) == 0 {
 		fmt.Println("Grid is empty")
 		return
@@ -202,7 +212,7 @@ func (g *Grid) PrintDebugWithDots(visited map[Point]bool) {
 		println()
 		for j, char := range line {
 			if visited[Point{i, j}] {
-				print("X")
+				print(string(symbol))
 			} else {
 				print(string(char))
 			}
