@@ -27,7 +27,7 @@ func runBoth() {
 			cell := grid.At(r, c)
 			if cell == '0' {
 				visited := make(map[util.Point]bool)
-				goldAnswer += findScore(grid, util.NewPoint(r, c), '0', visited)
+				goldAnswer += findScore(grid, util.Point{r, c}, '0', visited)
 				curScore := len(visited)
 				silverAnswer += curScore
 			}
@@ -42,7 +42,7 @@ func findScore(grid *util.Grid, startPoint util.Point, current rune, visited map
 		visited[startPoint] = true
 		return 1
 	}
-	directions := []util.Point{util.NewPoint(-1, 0), util.NewPoint(1, 0), util.NewPoint(0, -1), util.NewPoint(0, 1)}
+	directions := []util.Point{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 	nextCur := current + 1
 	ans := 0
 	for _, dir := range directions {

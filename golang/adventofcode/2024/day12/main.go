@@ -24,7 +24,7 @@ func runBoth() {
 	for r := 0; r < rSize; r++ {
 		for c := 0; c < cSize; c++ {
 			cell := grid.At(r, c)
-			point := util.NewPoint(r, c)
+			point := util.Point{r, c}
 			if !visited[point] {
 				area, perimeter, areaPoints := dfs(grid, point, visited, cell)
 				sides := sidesCount(areaPoints)
@@ -107,7 +107,7 @@ func sidesCount(area map[util.Point]bool) int {
 }
 
 func dfs(grid *util.Grid, startPoint util.Point, visited map[util.Point]bool, regionType rune) (int, int, map[util.Point]bool) {
-	directions := []util.Point{util.NewPoint(-1, 0), util.NewPoint(1, 0), util.NewPoint(0, -1), util.NewPoint(0, 1)}
+	directions := []util.Point{util.Point{-1, 0}, util.Point{1, 0}, util.Point{0, -1}, util.Point{0, 1}}
 	stack := []util.Point{startPoint}
 	area, perimeter := 0, 0
 	areaPoints := map[util.Point]bool{}

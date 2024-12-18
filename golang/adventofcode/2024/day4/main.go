@@ -37,7 +37,7 @@ func runBoth() {
 
 func validSilver(grid *util.Grid, r, c int) int {
 	count := 0
-	curPoint := util.NewPoint(r, c)
+	curPoint := util.Point{r, c}
 	for _, dir := range util.DIRECTIONS_ALL {
 		if grid.IsValidPoint(curPoint.AddPoint(dir.TimesPoint(3))) {
 			if grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(1))) == 'M' && grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(2))) == 'A' && grid.AtPoint(curPoint.AddPoint(dir.TimesPoint(3))) == 'S' {
@@ -52,7 +52,7 @@ func validGold(grid *util.Grid, r, c int) int {
 	count := 0
 	patterns := [][]rune{{'M', 'M', 'S', 'S'}, {'M', 'S', 'M', 'S'}, {'S', 'S', 'M', 'M'}, {'S', 'M', 'S', 'M'}}
 	directions := []util.Direction{util.LEFT_UP, util.LEFT_DOWN, util.RIGHT_UP, util.RIGHT_DOWN}
-	curPoint := util.NewPoint(r, c)
+	curPoint := util.Point{r, c}
 	if grid.IsValidPoint(curPoint.AddDirection(util.LEFT_UP)) && grid.IsValidPoint(curPoint.AddDirection(util.RIGHT_DOWN)) {
 		for _, pattern := range patterns {
 			valid := true

@@ -71,7 +71,7 @@ func robotsToString(robots []Robot) string {
 	var sb strings.Builder
 	for r := 0; r < maxR; r++ {
 		for c := 0; c < maxC; c++ {
-			if visited[util.NewPoint(r, c)] {
+			if visited[util.Point{r, c}] {
 				sb.WriteByte('x')
 			} else {
 				sb.WriteByte('.')
@@ -117,5 +117,5 @@ func parseRobot(line string) Robot {
 	r, _ := strconv.Atoi(posValues[1])
 	vc, _ := strconv.Atoi(velValues[0])
 	vr, _ := strconv.Atoi(velValues[1])
-	return Robot{util.NewPoint(r, c), util.NewPoint(vr, vc)}
+	return Robot{util.Point{r, c}, util.Point{vr, vc}}
 }

@@ -73,11 +73,11 @@ func findStartPosition(grid *util.Grid) (util.Point, util.Direction) {
 	for r, row := range grid.Grid {
 		for c, val := range row {
 			if val == '^' {
-				return util.NewPoint(r, c), util.UP
+				return util.Point{r, c}, util.UP
 			}
 		}
 	}
-	return util.NewPoint(-1, -1), util.UP
+	return util.Point{-1, -1}, util.UP
 }
 
 func turnRight(currentDir util.Direction) util.Direction {

@@ -26,7 +26,7 @@ func runAny(isGold bool) {
 		for c := 0; c < cSize; c++ {
 			cell := grid.At(r, c)
 			if cell != '.' {
-				antennaLocations[cell] = append(antennaLocations[cell], util.NewPoint(r, c))
+				antennaLocations[cell] = append(antennaLocations[cell], util.Point{r, c})
 			}
 		}
 	}

@@ -40,20 +40,20 @@ func runSilver() {
 		for c := 0; c < cSize; c++ {
 			cell := grid.At(r, c)
 			if cell == '@' {
-				robotPos = util.NewPoint(r, c)
+				robotPos = util.Point{r, c}
 				grid.SetRune(r, c, '.')
 			} else if cell == 'O' {
-				boxes[util.NewPoint(r, c)] = true
+				boxes[util.Point{r, c}] = true
 				grid.SetRune(r, c, '.')
 			}
 		}
 	}
 
 	moveMap := map[rune]util.Point{
-		'^': util.NewPoint(-1, 0),
-		'v': util.NewPoint(1, 0),
-		'<': util.NewPoint(0, -1),
-		'>': util.NewPoint(0, 1),
+		'^': {-1, 0},
+		'v': {1, 0},
+		'<': {0, -1},
+		'>': {0, 1},
 	}
 
 	for _, move := range movements {
@@ -103,7 +103,7 @@ func printState(g *util.Grid, boxes map[util.Point]bool, robotPos util.Point) {
 	for i, line := range g.Grid {
 		for j, char := range line {
 			curChar := byte(char)
-			if boxes[util.NewPoint(i, j)] {
+			if boxes[util.Point{i, j}] {
 				curChar = 'O'
 			}
 			if robotPos.R == i && robotPos.C == j {
@@ -150,42 +150,6 @@ func runGold() {
 		'^': {0, -1}, '>': {1, 0}, 'v': {0, 1}, '<': {-1, 0},
 		'[': {1, 0}, ']': {-1, 0},
 	}
-
-	//var isBox func(leftBorder util.Point) (bool, util.Point)
-	//var canMoveBoxes func(robotPos util.Point, delta util.Point, boxesToMove map[util.Point]bool) (bool, map[util.Point]bool)
-	//var moveBoxes func(boxesToMove map[util.Point]bool, delta util.Point)
-	//
-	//isBox = func(leftBorder util.Point) (bool, util.Point) {
-	//	if boxes[leftBorder] {
-	//		return true, leftBorder
-	//	}
-	//	rightBorder := leftBorder.AddPoint(util.NewPoint(0, -1))
-	//	if boxes[rightBorder] {
-	//		return true, rightBorder
-	//	}
-	//	return false, util.NewPoint(-1, -1)
-	//}
-	//
-	//canMoveBoxes = func(robotPos util.Point, delta util.Point, boxesToMove map[util.Point]bool) (bool, map[util.Point]bool) {
-	//	nextPos := robotPos.AddPoint(delta)
-	//	nextIsBox, nextBox := isBox(nextPos)
-	//	if grid.AtPoint(nextPos) == '#' {
-	//		return false, boxesToMove
-	//	}
-	//	if nextIsBox {
-	//		boxesToMove[nextBox] = true
-	//		return canMoveBoxes(nextBox, delta, boxesToMove)
-	//	}
-	//	return true, boxesToMove
-	//}
-	//
-	//moveBoxes = func(boxesToMove map[util.Point]bool, delta util.Point) {
-	//	for box := range boxesToMove {
-	//		delete(boxes, box)
-	//		boxes[box.AddPoint(delta)] = true
-	//	}
-	//}
-
 loop:
 	for _, r := range movements {
 		queue, boxes := []util.Point{robotPos}, map[util.Point]rune{}
