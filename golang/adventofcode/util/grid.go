@@ -35,7 +35,7 @@ var DIRECTIONS_ALL = []Point{
 }
 
 type Point struct {
-	r, c int
+	R, C int
 }
 
 type Grid struct {
@@ -47,6 +47,34 @@ func NewGridEmpty() *Grid {
 	return &Grid{
 		Grid: grid,
 	}
+}
+
+func (g *Grid) BFS(start Point, end Point) (bool, []Point) {
+	visited := make(map[Point]bool)
+	visitedParent := make(map[Point]*Point)
+	queue := []Point{start}
+	visited[start] = true
+	var directions = []Point{Directions[RIGHT], Directions[DOWN], Directions[LEFT], Directions[UP]}
+	for len(queue) > 0 {
+		curPoint := queue[0]
+		queue = queue[1:]
+		if curPoint == end {
+			var path []Point
+			for p := &curPoint; p != nil; p = visitedParent[*p] {
+				path = append([]Point{*p}, path...)
+			}
+			return true, path
+		}
+		for _, dir := range directions {
+			nextPoint := curPoint.AddPoint(dir)
+			if g.IsValidPoint(nextPoint) && !visited[nextPoint] && g.AtPoint(nextPoint) == '.' {
+				visited[nextPoint] = true
+				visitedParent[nextPoint] = &curPoint
+				queue = append(queue, nextPoint)
+			}
+		}
+	}
+	return false, nil
 }
 
 func (g *Grid) Copy() *Grid {
@@ -92,57 +120,50 @@ func (g *Grid) SetRune(r, c int, char rune) {
 }
 
 func (p Point) String() string {
-	return fmt.Sprintf("(%d,%d)", p.r, p.c)
+	return fmt.Sprintf("(%d,%d)", p.R, p.C)
 }
 
 func NewPoint(r, c int) Point {
 	return Point{
-		r: r,
-		c: c,
+		R: r,
+		C: c,
 	}
 }
 
 func (p Point) AddDirection(direction Direction) Point {
 	if dir, exists := Directions[direction]; exists {
-		return Point{r: p.r + dir.r, c: p.c + dir.c}
+		return Point{R: p.R + dir.R, C: p.C + dir.C}
 	}
 	return p
 }
 
-func (p Point) R() int {
-	return p.r
-}
-
-func (p Point) C() int {
-	return p.c
-}
 func (p Point) AddPointInBorder(point Point, maxR, maxC int) Point {
 	return Point{
-		r: (p.r + point.r + maxR) % maxR,
-		c: (p.c + point.c + maxC) % maxC,
+		R: (p.R + point.R + maxR) % maxR,
+		C: (p.C + point.C + maxC) % maxC,
 	}
 }
 
 func (p Point) AddPoint(point Point) Point {
 	return Point{
-		r: p.r + point.r,
-		c: p.c + point.c,
+		R: p.R + point.R,
+		C: p.C + point.C,
 	}
 }
 
 func (p Point) MinusPoint(point Point) Point {
 	return Point{
-		r: p.r - point.r,
-		c: p.c - point.c,
+		R: p.R - point.R,
+		C: p.C - point.C,
 	}
 }
 
 func (p Point) EqualPoint(point Point) bool {
-	return p.r == point.r && p.c == point.c
+	return p.R == point.R && p.C == point.C
 }
 
 func (p Point) TimesPoint(times int) Point {
-	return Point{r: p.r * times, c: p.c * times}
+	return Point{R: p.R * times, C: p.C * times}
 }
 
 func NewGrid(lines []string) *Grid {
@@ -192,7 +213,15 @@ func (g *Grid) PrintDebug() {
 func (g *Grid) PrintDebugWithDots(visited map[Point]bool) {
 	g.PrintDebugWithDotsSymbol(visited, 'X')
 }
+
+func (g *Grid) PrintDebugVisitedOnly(visited map[Point]bool, symbol rune) {
+	g.printDebugAny(visited, symbol, true)
+}
+
 func (g *Grid) PrintDebugWithDotsSymbol(visited map[Point]bool, symbol rune) {
+	g.printDebugAny(visited, symbol, false)
+}
+func (g *Grid) printDebugAny(visited map[Point]bool, symbol rune, visitedOnly bool) {
 	if len(g.Grid) == 0 {
 		fmt.Println("Grid is empty")
 		return
@@ -207,23 +236,34 @@ func (g *Grid) PrintDebugWithDotsSymbol(visited map[Point]bool, symbol rune) {
 		println(strings.Repeat(firstLine, columns/100+1)[:columns])
 	}
 	println(strings.Repeat("0123456789", columns/10+1)[:columns])
-
+	sb := strings.Builder{}
 	for i, line := range g.Grid {
-		println()
 		for j, char := range line {
 			if visited[Point{i, j}] {
-				print(string(symbol))
+				sb.WriteByte(byte(symbol))
 			} else {
-				print(string(char))
+				if visitedOnly {
+					sb.WriteByte(' ')
+				} else {
+					sb.WriteByte(byte(char))
+				}
 			}
 		}
+		sb.WriteByte('\n')
 	}
-	fmt.Println()
-
+	fmt.Println(sb.String())
 }
 
 func (g *Grid) IsValidPoint(p Point) bool {
-	return g.IsValid(p.r, p.c)
+	return g.IsValid(p.R, p.C)
+}
+
+func ConvertSliceToMap(points []Point) map[Point]bool {
+	pointMap := make(map[Point]bool)
+	for _, point := range points {
+		pointMap[point] = true
+	}
+	return pointMap
 }
 
 func (g *Grid) IsValid(r, c int) bool {
@@ -235,13 +275,13 @@ func (g *Grid) At(r, c int) rune {
 }
 
 func (g *Grid) AtPoint(p Point) rune {
-	return g.At(p.r, p.c)
+	return g.At(p.R, p.C)
 }
 
 func (g *Grid) Neighbors(p Point) []Point {
 	var neighbors []Point
 	for _, dir := range DIRECTIONS_ALL {
-		neighbor := Point{r: p.r + dir.r, c: p.c + dir.c}
+		neighbor := Point{R: p.R + dir.R, C: p.C + dir.C}
 		if g.IsValidPoint(neighbor) {
 			neighbors = append(neighbors, neighbor)
 		}

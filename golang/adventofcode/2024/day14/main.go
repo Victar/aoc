@@ -86,15 +86,15 @@ func countQuadrant(robots []Robot) int {
 	midR, midC := maxR/2, maxC/2
 	q1, q2, q3, q4 := 0, 0, 0, 0
 	for _, robot := range robots {
-		if robot.position.R() != midR && robot.position.C() != midC {
+		if robot.position.R != midR && robot.position.C != midC {
 			switch {
-			case robot.position.R() < midR && robot.position.C() < midC:
+			case robot.position.R < midR && robot.position.C < midC:
 				q1++
-			case robot.position.R() >= midR && robot.position.C() < midC:
+			case robot.position.R >= midR && robot.position.C < midC:
 				q2++
-			case robot.position.R() < midR && robot.position.C() >= midC:
+			case robot.position.R < midR && robot.position.C >= midC:
 				q3++
-			case robot.position.R() >= midR && robot.position.C() >= midC:
+			case robot.position.R >= midR && robot.position.C >= midC:
 				q4++
 			}
 		}
