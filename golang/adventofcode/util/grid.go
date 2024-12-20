@@ -151,6 +151,17 @@ func (p Point) AddPoint(point Point) Point {
 	}
 }
 
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func (p Point) Distance(point Point) int {
+	return Abs(p.R-point.R) + Abs(p.C-point.C)
+}
+
 func (p Point) MinusPoint(point Point) Point {
 	return Point{
 		R: p.R - point.R,
