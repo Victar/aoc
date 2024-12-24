@@ -12,7 +12,7 @@ var DAY = "24"
 
 func main() {
 	runSilver()
-	//runGold()
+	runGold()
 }
 
 func runSilver() {
@@ -34,19 +34,8 @@ func runSilver() {
 	}
 	runOperations(values, operations)
 	output := calcSilver(values)
-	//printMap(values)
 	fmt.Println(output)
 
-}
-func printMap(m map[string]int) {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, k := range keys {
-		fmt.Println(k, m[k])
-	}
 }
 
 func runOperations(values map[string]int, operations [][]string) {
@@ -85,12 +74,95 @@ func calcSilver(values map[string]int) int {
 	}
 	return result
 }
+
 func runGold() {
 	lines, err := util.ReadFile("year2024/day" + DAY + "/input.txt")
 	if err != nil {
 		panic(err)
 	}
-	for _, line := range lines {
-		println(line)
+	divider := 0
+	for i, line := range lines {
+		if line == "" {
+			divider = i
+			break
+		}
 	}
+	configurations := lines[divider+1:]
+	swaps := checkAdder(configurations)
+	sort.Strings(swaps)
+	fmt.Println(strings.Join(swaps, ","))
+}
+
+func checkAdder(configurations []string) []string {
+	var currentCarryWire string
+	var swaps []string
+	bit := 0
+
+	for {
+		xWire := fmt.Sprintf("x%02d", bit)
+		yWire := fmt.Sprintf("y%02d", bit)
+		zWire := fmt.Sprintf("z%02d", bit)
+
+		if bit == 0 {
+			currentCarryWire = findGate(xWire, yWire, "AND", configurations)
+		} else {
+			abXorGate := findGate(xWire, yWire, "XOR", configurations)
+			abAndGate := findGate(xWire, yWire, "AND", configurations)
+
+			cinAbXorGate := findGate(abXorGate, currentCarryWire, "XOR", configurations)
+			if cinAbXorGate == "" {
+				swaps = append(swaps, abXorGate, abAndGate)
+				configurations = swapOutputWires(abXorGate, abAndGate, configurations)
+				bit = 0
+				continue
+			}
+
+			if cinAbXorGate != zWire {
+				swaps = append(swaps, cinAbXorGate, zWire)
+				configurations = swapOutputWires(cinAbXorGate, zWire, configurations)
+				bit = 0
+				continue
+			}
+
+			cinAbAndGate := findGate(abXorGate, currentCarryWire, "AND", configurations)
+			carryWire := findGate(abAndGate, cinAbAndGate, "OR", configurations)
+			currentCarryWire = carryWire
+		}
+
+		bit++
+		if bit >= 45 {
+			break
+		}
+	}
+	return swaps
+}
+
+func findGate(xWire, yWire, gateType string, configurations []string) string {
+	subStrA := fmt.Sprintf("%s %s %s -> ", xWire, gateType, yWire)
+	subStrB := fmt.Sprintf("%s %s %s -> ", yWire, gateType, xWire)
+
+	for _, config := range configurations {
+		if strings.Contains(config, subStrA) || strings.Contains(config, subStrB) {
+			return strings.Split(config, " -> ")[1]
+		}
+	}
+	return ""
+}
+
+func swapOutputWires(wireA, wireB string, configurations []string) []string {
+	var newConfigurations []string
+	for _, config := range configurations {
+		parts := strings.Split(config, " -> ")
+		inputWires, outputWire := parts[0], parts[1]
+
+		switch outputWire {
+		case wireA:
+			newConfigurations = append(newConfigurations, fmt.Sprintf("%s -> %s", inputWires, wireB))
+		case wireB:
+			newConfigurations = append(newConfigurations, fmt.Sprintf("%s -> %s", inputWires, wireA))
+		default:
+			newConfigurations = append(newConfigurations, config)
+		}
+	}
+	return newConfigurations
 }
